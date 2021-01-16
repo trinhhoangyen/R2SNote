@@ -56,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
@@ -67,28 +66,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
-    public void Login(String user, String pass){
-        // Login
-        database.child("users").addValueEventListener(new ValueEventListener() {
-            Boolean result = new Boolean(false);
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    User u = ds.getValue(User.class);
-                    if(u.getUsername().equals(user) && u.getPassword().equals(pass)) {
-                        result = true;
-                        Log.e("-----SUCCESS-----", u.getUsername() + u.getPassword());
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-    }
     public void createNote(String id, String name, String cate, Date planDate, Date createDate){
         Note n = new Note( name, cate, planDate, createDate);
         database.child("notes").child(id).setValue(n);
