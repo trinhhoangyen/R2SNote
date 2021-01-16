@@ -37,32 +37,25 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
 
         Log.d("huy", "aloooooooooooooooooooooooooooooooooo");
-        //anyChartView = anyChartView.findViewById(R.id.any_chart_view);
+        anyChartView = (AnyChartView) root.findViewById(R.id.any_chart_view);
 
-        //setupPieChart();
+        setupPieChart();
 
         return root;
     }
 
-//    public void setupPieChart(){
-//        Pie pie = AnyChart.pie();
-//
-//        List<DataEntry> dataEntries = new ArrayList<>();
-//
-//        for(int i = 0; i < months.length; i++){
-//            dataEntries.add(new ValueDataEntry(months[i], earnings[i]));
-//        }
-//
-//        pie.data(dataEntries);
-//        anyChartView.setChart(pie);
-//    }
+    public void setupPieChart(){
+        Pie pie = AnyChart.pie();
+
+        List<DataEntry> dataEntries = new ArrayList<>();
+
+        for(int i = 0; i < months.length; i++){
+            dataEntries.add(new ValueDataEntry(months[i], earnings[i]));
+        }
+
+        pie.data(dataEntries);
+        anyChartView.setChart(pie);
+    }
 }
