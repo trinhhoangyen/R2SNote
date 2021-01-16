@@ -56,10 +56,10 @@ public class Login extends AppCompatActivity {
                     User u = ds.getValue(User.class);
                     if(u.getUsername().equals(user) && u.getPassword().equals(pass)) {
                         result = true;
-                        Log.e("-----SUCCESS-----", u.getUsername() + u.getPassword());
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công!!!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(v.getContext(), MainActivity.class);
-//                        intent.putExtra("Full_Name", fullName);
+                        intent.putExtra("Username", user);
+                        intent.putExtra("Password", pass);
                         startActivity(intent);
                     }
                 }

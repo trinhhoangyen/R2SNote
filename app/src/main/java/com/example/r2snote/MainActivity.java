@@ -1,5 +1,6 @@
 package com.example.r2snote;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        String username = intent.getStringExtra("Username");
+        String password = intent.getStringExtra("Password");
+        Log.e(username, password);
+
         getNote();
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date pd = null;
