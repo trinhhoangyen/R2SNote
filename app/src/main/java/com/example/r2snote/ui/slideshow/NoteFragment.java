@@ -1,13 +1,21 @@
 package com.example.r2snote.ui.slideshow;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +24,7 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.r2snote.DTO.Category;
 import com.example.r2snote.DTO.Note;
 import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
@@ -26,18 +35,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.zip.Inflater;
+import java.util.Random;
+import java.util.UUID;
 
 public class NoteFragment extends Fragment {
     private MainActivity mainActivity;
-    private User user;
+
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    private User user;
+    ArrayList<Note> listNote;
+    ArrayList<Category> listCategory;
+
     private NoteViewModel noteViewModel;
     NoteListViewAdapter noteListViewAdapter;
-    ArrayList<Note> listNote = new ArrayList<>();
     ListView listViewNote;
+
+    private Button btnShowPopup;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -46,34 +64,86 @@ public class NoteFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_note, container, false);
         mainActivity = (MainActivity) getActivity();
         listViewNote = (ListView) root.findViewById(R.id.listViewNote);
+        btnShowPopup = (Button) root.findViewById(R.id.btnShowPopup);
         user = mainActivity.getUser();
-        getNote(user.getId());
+        getListNote(user.getId());
+        getListCategory();
 
+        btnShowPopup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View popupView = getLayoutInflater().inflate(R.layout.popup_add_note, null);
+                PopupWindow popupWindow = new PopupWindow(popupView, 600, 700, true);
+                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                EditText etdNewNoteName = (EditText) popupView.findViewById(R.id.etdNewNoteName);
 
-        //        Log.e("----------user: ", user.getId());
-//        getNote();
-//        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-//        Date pd = null;
-//        try {
-//            pd = formatter.parse("1/1/2021");
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Date cd = new Date();
+                Spinner spnCategory = popupView.findViewById(R.id.spnCategpry);
+                ArrayList<String> items = new ArrayList<>();
+                for (Category c : listCategory){
+                    items.add(c.getName());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+                spnCategory.setAdapter(adapter);
+
+                EditText edtPlanDate = popupView.findViewById(R.id.edtPlanDate);
+                edtPlanDate.setInputType(InputType.TYPE_NULL);
+                edtPlanDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar cldr = Calendar.getInstance();
+                        int day = cldr.get(Calendar.DAY_OF_MONTH);
+                        int month = cldr.get(Calendar.MONTH);
+                        int year = cldr.get(Calendar.YEAR);
+                        DatePickerDialog picker =  new DatePickerDialog(getActivity(),
+                                new DatePickerDialog.OnDateSetListener() {
+                                    @Override
+                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                        edtPlanDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                    }
+                                }, year, month, day);
+                        picker.show();
+                    }
+                });
+
+                Button btnAddNote = popupView.findViewById(R.id.btnAddNote);
+                btnAddNote.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String name = etdNewNoteName.getText().toString();
+                        String cate = spnCategory.getSelectedItem().toString();
+                        Date cd = new Date();
+                        Date pd = null;
+
+                        try {
+                            pd = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (cate != null && name != null && pd != null) {
+                            UUID uuid = UUID.randomUUID();
+                            createNote(uuid.toString(),name, cate.toString(), pd, cd );
+                            popupWindow.dismiss();
+                        }
+//                        Log.e("name: "+name + "cate: " +cate, "pd: " + pd.toLocaleString() + "cd: " + cd.toLocaleString());
+                    }
+                });
+            }
+        });
 
         return root;
     }
-
 
     public void createNote(String id, String name, String cate, Date planDate, Date createDate){
         Note n = new Note(user.getId(), name, cate, planDate, createDate);
         if(!user.getId().equals("") && !name.equals("") && !cate.equals("")) {
             database.child("notes").child(id).setValue(n);
         }
+        listNote.clear();
     }
 
-    public void getNote(String userId){
+    public void getListNote(String userId){
+        listNote  = new ArrayList<>();
         database.child("notes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -88,7 +158,6 @@ public class NoteFragment extends Fragment {
 
                 Log.e("-----size in getNote", listNote.size() + "");
                 if (listNote.size() > 0){
-
                     noteListViewAdapter = new NoteListViewAdapter(listNote);
                     listViewNote.setAdapter(noteListViewAdapter);
                 }
@@ -101,7 +170,29 @@ public class NoteFragment extends Fragment {
             }
         });
     }
+
+    public void getListCategory(){
+        Log.e("---------","Vô getcate");
+
+        listCategory  = new ArrayList<Category>();
+        database.child("categories").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Category category = ds.getValue(Category.class);
+                            listCategory.add(category);
+                    }
+                }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mainActivity.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
 }
+
 class NoteListViewAdapter extends BaseAdapter {
 
     final ArrayList<Note> listNote;

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.r2snote.DTO.Note;
@@ -45,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         newInstance();
         Intent intent = getIntent();
-        user = new User(intent.getStringExtra("Id"), intent.getStringExtra("Username"), intent.getStringExtra("Password"));
-
+//        user = new User(intent.getStringExtra("Id"), intent.getStringExtra("Username"), intent.getStringExtra("Password"));
+user = new User("001","admin", "1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
