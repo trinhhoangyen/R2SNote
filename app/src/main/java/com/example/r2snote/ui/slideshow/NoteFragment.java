@@ -6,6 +6,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -76,11 +78,34 @@ public class NoteFragment extends Fragment {
                 showPopup(view);
             }
         });
-
+        String TAG = "Note";
         listViewNote.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.e("---------", noteListViewAdapter.getNoteId(i));
+                Log.e(TAG, noteListViewAdapter.getNoteId(i));
+                showPopupMenu(view, i, noteListViewAdapter.getNoteId(i));
+            }
+            private void showPopupMenu(View view, int position, String noteID){
+                PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+                popupMenu.inflate(R.menu.popup_edit_delete);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.action_popup_edit:
+                                Log.e(TAG, "edit " + position);
+
+                                return true;
+                            case R.id.action_popup_delete:
+                                Log.e(TAG, "del " + position);
+                                deleteNote(noteID);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
             }
         });
 
@@ -151,6 +176,12 @@ public class NoteFragment extends Fragment {
             database.child("notes").child(uuid.toString()).setValue(n);
         }
         listNote.clear();
+    }
+
+    public void deleteNote(String id){
+        database.child("notes").child(id).removeValue();
+        listNote.clear();
+        Toast.makeText(mainActivity.getApplicationContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
     }
 
     public void getListNote(String userId){
