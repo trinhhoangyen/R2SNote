@@ -43,7 +43,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
 import java.util.UUID;
 
 public class NoteFragment extends Fragment {
@@ -60,6 +59,7 @@ public class NoteFragment extends Fragment {
 
     private Button btnShowPopup;
 
+    String TAG = "Note";
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         noteViewModel =
@@ -75,17 +75,16 @@ public class NoteFragment extends Fragment {
         btnShowPopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopup(view);
+                showPopupNote(view, new Note(), 0);
             }
         });
-        String TAG = "Note";
         listViewNote.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.e(TAG, noteListViewAdapter.getNoteId(i));
-                showPopupMenu(view, i, noteListViewAdapter.getNoteId(i));
+                Log.e(TAG, noteListViewAdapter.getNote(i).getId());
+                showPopupMenu(view, i, noteListViewAdapter.getNote(i));
             }
-            private void showPopupMenu(View view, int position, String noteID){
+            private void showPopupMenu(View view, int position, Note note){
                 PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
                 popupMenu.inflate(R.menu.popup_edit_delete);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -93,12 +92,10 @@ public class NoteFragment extends Fragment {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()){
                             case R.id.action_popup_edit:
-                                Log.e(TAG, "edit " + position);
-
+                                showPopupNote(view, note,1);
                                 return true;
                             case R.id.action_popup_delete:
-                                Log.e(TAG, "del " + position);
-                                deleteNote(noteID);
+                                deleteNote(note.getId());
                                 return true;
                             default:
                                 return false;
@@ -112,22 +109,33 @@ public class NoteFragment extends Fragment {
         return root;
     }
 
-    public void showPopup(View view){
-        View popupView = getLayoutInflater().inflate(R.layout.popup_add_note, null);
-        PopupWindow popupWindow = new PopupWindow(popupView, 600, 700, true);
+    public void showPopupNote(View view, Note note, int type){
+        View popupView = getLayoutInflater().inflate(R.layout.popup_note, null);
+        PopupWindow popupWindow = new PopupWindow(popupView, 800, 800, true);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
         EditText etdNewNoteName = (EditText) popupView.findViewById(R.id.etdNewNoteName);
+        etdNewNoteName.setText(note.getName());
 
         Spinner spnCategory = popupView.findViewById(R.id.spnCategpry);
+
         ArrayList<String> items = new ArrayList<>();
+        int positionSpnCategory = 0;
         for (Category c : listCategory){
             items.add(c.getName());
+            if (c.getName().equals(note.getCategory())){
+                positionSpnCategory = items.size()-1;
+            }
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
         spnCategory.setAdapter(adapter);
+        spnCategory.setSelection(positionSpnCategory);
 
         EditText edtPlanDate = popupView.findViewById(R.id.edtPlanDate);
         edtPlanDate.setInputType(InputType.TYPE_NULL);
+            String pd = note.getPlanDate().getDate() + "/" + (note.getPlanDate().getMonth()+1) + "/"
+                    + (note.getPlanDate().getYear() + 1900);
+            edtPlanDate.setText(pd);
         edtPlanDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,40 +154,80 @@ public class NoteFragment extends Fragment {
             }
         });
 
-        Button btnAddNote = popupView.findViewById(R.id.btnAddNote);
-        btnAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = etdNewNoteName.getText().toString();
-                String cate = spnCategory.getSelectedItem().toString();
-                Date cd = new Date();
-                Date pd = null;
 
-                try {
-                    pd = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+        TextView txtTypePopupNote = popupView.findViewById(R.id.txtTypePopupNote);
+        Button btnActivity = popupView.findViewById(R.id.btnActivity);
+        if (type == 1) {
+            txtTypePopupNote.setText("Edit note");
+            btnActivity.setText("EDIT NOTE");
+            btnActivity.setOnClickListener(new View.OnClickListener() {
 
-                if (cate != null && name != null && pd != null) {
-                    createNote(name, cate.toString(), pd, cd );
-                    popupWindow.dismiss();
+                @Override
+                public void onClick(View view) {
+                    String name = etdNewNoteName.getText().toString();
+                    String cate = spnCategory.getSelectedItem().toString();
+                    Date cd = new Date();
+                    Date pd = null;
+
+                    try {
+                        pd = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (cate != null && name != null && pd != null) {
+                        Note temp = new Note(note.getUserId(), name, cate, pd, cd);
+                        temp.setId(note.getId());
+                        updateNote(temp);
+                        Toast.makeText(mainActivity.getApplicationContext(), "Edit successfully", Toast.LENGTH_SHORT).show();
+                        popupWindow.dismiss();
+                    }
+                    else {
+                        Toast.makeText(mainActivity.getApplicationContext(), "Edit failure", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+        else {
+            btnActivity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String name = etdNewNoteName.getText().toString();
+                    String cate = spnCategory.getSelectedItem().toString();
+                    Date cd = new Date();
+                    Date pd = null;
+
+                    try {
+                        pd = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (cate != null && name != null && pd != null) {
+                        addNote(name, cate.toString(), pd, cd );
+                        Toast.makeText(mainActivity.getApplicationContext(), "Add successfully", Toast.LENGTH_SHORT).show();
+                        popupWindow.dismiss();
+                    }
+                    else {
+                        Toast.makeText(mainActivity.getApplicationContext(), "Add failure", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
     }
 
-    public void createNote(String name, String cate, Date planDate, Date createDate){
+    public void addNote(String name, String cate, Date planDate, Date createDate){
         try {
             Note n = new Note(user.getId(), name, cate, planDate, createDate);
             if(!user.getId().equals("") && !name.equals("") && !cate.equals("")) {
                 UUID uuid = UUID.randomUUID();
                 database.child("notes").child(uuid.toString()).setValue(n);
                 listNote.clear();
+                Toast.makeText(mainActivity.getApplicationContext(), "Add successfully", Toast.LENGTH_SHORT).show();
             }
         }
         catch (Exception err){
-            Toast.makeText(mainActivity.getApplicationContext(), err.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainActivity.getApplicationContext(), "Add failure: " +err.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -187,11 +235,22 @@ public class NoteFragment extends Fragment {
         try {
             database.child("notes").child(id).removeValue();
             listNote.clear();
-            Toast.makeText(mainActivity.getApplicationContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainActivity.getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
         }
         catch (Exception err){
+            Toast.makeText(mainActivity.getApplicationContext(), "Delete failure: " + err.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
-            Toast.makeText(mainActivity.getApplicationContext(), err.toString(), Toast.LENGTH_SHORT).show();
+    public void updateNote(Note note){
+        try {
+            database.child("notes").child(note.getId()).setValue(note);
+            Log.e(TAG, note.getId());
+            listNote.clear();
+            Toast.makeText(mainActivity.getApplicationContext(), "Edit successfully", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception err){
+            Toast.makeText(mainActivity.getApplicationContext(), "Edit failure: " +err.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -269,8 +328,9 @@ class NoteListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    public String getNoteId(int position) {
-        return listNote.get(position).getId();
+    public Note getNote(int position) {
+//        Note note = new Note()
+        return listNote.get(position);
     }
 
     @Override

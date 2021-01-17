@@ -5,7 +5,7 @@ import java.util.Date;
 public class Note {
 
     private String id,name,category, userId;
-    private Date planDate, createDate;
+    private Date planDate = new Date(), createDate = new Date();
     public Note() {
 
     }

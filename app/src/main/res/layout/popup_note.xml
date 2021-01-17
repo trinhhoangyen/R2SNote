@@ -7,6 +7,7 @@
     android:background="@color/lightgrey">
 
     <TextView
+        android:id="@+id/txtTypePopupNote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -33,12 +34,12 @@
         android:id="@+id/edtPlanDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="140dp"
         android:ems="10"
         android:hint="Select plan date" />
 
     <Button
-        android:id="@+id/btnAddNote"
+        android:id="@+id/btnActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
