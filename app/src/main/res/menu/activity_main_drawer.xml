@@ -16,5 +16,9 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Note" />
+        <item
+            android:id="@+id/nav_changepassword"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Change Password" />
     </group>
 </menu>

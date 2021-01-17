@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
@@ -23,7 +25,7 @@ public class Login extends AppCompatActivity {
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     private EditText edtUsername, edtPassword;
     private Button btnLogin;
-
+    public String password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +38,6 @@ public class Login extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("aaaa", "aa");
                 String username , password;
                 username = edtUsername.getText().toString();
                 password = edtPassword.getText().toString();
@@ -60,6 +61,7 @@ public class Login extends AppCompatActivity {
                         Intent intent = new Intent(v.getContext(), MainActivity.class);
                         intent.putExtra("Username", user);
                         intent.putExtra("Password", pass);
+                        password = pass;
                         startActivity(intent);
                     }
                 }
@@ -69,5 +71,13 @@ public class Login extends AppCompatActivity {
                 // Failed to read value
             }
         });
+    }
+
+    public void sendDataToFragment(String username, String pass){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+    }
+
+    public String getPass(){
+        return password;
     }
 }

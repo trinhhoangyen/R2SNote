@@ -37,10 +37,7 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
-        Log.d("huy", "aloooooooooooooooooooooooooooooooooo");
         anyChartView = (AnyChartView) root.findViewById(R.id.any_chart_view);
-
         setupPieChart();
 
         return root;
