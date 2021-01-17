@@ -2,23 +2,14 @@ package com.example.r2snote;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 import android.widget.TextView;
 
-import com.example.r2snote.DTO.Note;
 import com.example.r2snote.ui.home.HomeFragment;
-import com.example.r2snote.ui.slideshow.NoteFragment;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -29,13 +20,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.r2snote.DTO.User;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     private TextView txt_username;
@@ -44,11 +28,12 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         newInstance();
         Intent intent = getIntent();
-//        user = new User(intent.getStringExtra("Id"), intent.getStringExtra("Username"), intent.getStringExtra("Password"));
-user = new User("001","admin", "1");
-        super.onCreate(savedInstanceState);
+        user = new User(intent.getStringExtra("Username"), intent.getStringExtra("Password"));
+       user.setId(intent.getStringExtra("Id"));
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -56,7 +41,7 @@ user = new User("001","admin", "1");
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_changepassword)
+                R.id.nav_home, R.id.nav_category, R.id.nav_note, R.id.nav_changepassword)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -86,7 +71,8 @@ user = new User("001","admin", "1");
     }
 
     public User getUser(){
-        User u = new User(user.getId(), user.getUsername(), user.getPassword());
+        User u = new User(user.getUsername(), user.getPassword());
+        u.setId(user.getId());
         return u;
     }
 

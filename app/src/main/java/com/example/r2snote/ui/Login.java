@@ -57,17 +57,16 @@ public class Login extends AppCompatActivity {
                     u.setId(ds.getKey());
                     if(u.getUsername().equals(user) && u.getPassword().equals(pass)) {
                         result = true;
-                        Toast.makeText(getApplicationContext(), "Đăng nhập thành công!!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Login successfully!!!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(v.getContext(), MainActivity.class);
                         intent.putExtra("Username", u.getUsername());
                         intent.putExtra("Password", u.getPassword());
                         intent.putExtra("Id", u.getId());
-                        password = pass;
                         startActivity(intent);
                     }
                 }
                 if (!result){
-                    Toast.makeText(getApplicationContext(), "Đăng nhập không thành công, bạn vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Login was not successful!", Toast.LENGTH_SHORT).show();
                 }
             }
             @Override

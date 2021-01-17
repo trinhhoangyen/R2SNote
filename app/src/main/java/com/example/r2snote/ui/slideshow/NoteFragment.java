@@ -183,7 +183,7 @@ public class NoteFragment extends Fragment {
                         popupWindow.dismiss();
                     }
                     else {
-                        Toast.makeText(mainActivity.getApplicationContext(), "Edit failure", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainActivity.getApplicationContext(), "Edit was not successful", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -209,7 +209,7 @@ public class NoteFragment extends Fragment {
                         popupWindow.dismiss();
                     }
                     else {
-                        Toast.makeText(mainActivity.getApplicationContext(), "Add failure", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainActivity.getApplicationContext(), "Add was not successful", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -227,7 +227,7 @@ public class NoteFragment extends Fragment {
             }
         }
         catch (Exception err){
-            Toast.makeText(mainActivity.getApplicationContext(), "Add failure: " +err.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainActivity.getApplicationContext(), "Add was not successful: " +err.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -238,19 +238,18 @@ public class NoteFragment extends Fragment {
             Toast.makeText(mainActivity.getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
         }
         catch (Exception err){
-            Toast.makeText(mainActivity.getApplicationContext(), "Delete failure: " + err.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainActivity.getApplicationContext(), "Delete was not successful: " + err.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
     public void updateNote(Note note){
         try {
             database.child("notes").child(note.getId()).setValue(note);
-            Log.e(TAG, note.getId());
             listNote.clear();
             Toast.makeText(mainActivity.getApplicationContext(), "Edit successfully", Toast.LENGTH_SHORT).show();
         }
         catch (Exception err){
-            Toast.makeText(mainActivity.getApplicationContext(), "Edit failure: " +err.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainActivity.getApplicationContext(), "Edit was not successful: " +err.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
