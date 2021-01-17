@@ -37,31 +37,15 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView txt_username, txt_password;
+    private TextView txt_username;
     private AppBarConfiguration mAppBarConfiguration;
-    private String pass;
-    // Write a message to the database
+    private User user;
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         newInstance();
         Intent intent = getIntent();
-        String username = intent.getStringExtra("Username");
-        String password = intent.getStringExtra("Password");
-        pass = password;
-
-        getNote();
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date pd = null;
-        try {
-            pd = formatter.parse("1/1/2021");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Date cd = new Date();
-        createNote("001", "Football", "Relax", pd,cd);
-        createNote("002","Play", "Relax", pd,cd);
+        user = new User(intent.getStringExtra("Id"), intent.getStringExtra("Username"), intent.getStringExtra("Password"));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -80,36 +64,8 @@ public class MainActivity extends AppCompatActivity {
         txt_username = findViewById(R.id.txt_username);
     }
 
-    public void createNote(String id, String name, String cate, Date planDate, Date createDate){
-        Note n = new Note( name, cate, planDate, createDate);
-        database.child("notes").child(id).setValue(n);
-    }
-    public void getNote(){
-        // Login
-        database.child("notes").addValueEventListener(new ValueEventListener() {
-            List<Note> list = new ArrayList<>();
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Note u = ds.getValue(Note.class);
-                    list.add(u);
-                }
-                newInstance();
-                for (Note n : list
-                ) {
-                    Log.e(n.getCategory() + " - " + n.getName(), n.getPlanDate().toLocaleString());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -123,14 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void newInstance(){
         HomeFragment n = new HomeFragment();
-        // Supply index input as an argument.
         Bundle args = new Bundle();
         args.putString("ms", "list note" );
         n.setArguments(args);
     }
 
-    public String getPass(){
-        return pass;
+    public User getUser(){
+        User u = new User(user.getId(), user.getUsername(), user.getPassword());
+        return u;
     }
 
 

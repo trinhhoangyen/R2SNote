@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
 import com.example.r2snote.R;
 import com.example.r2snote.ui.Login;
@@ -25,7 +26,7 @@ public class ChangePasswordFragment extends Fragment{
     private TextView txt_tittle;
     private Button btnChange;
     private EditText edtCurrent, edtNewPass, edtNewPassAgain;
-    private String pass;
+    private User user;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class ChangePasswordFragment extends Fragment{
         View root = inflater.inflate(R.layout.fragment_change_password, container, false);
         mainActivity = (MainActivity) getActivity();
         txt_tittle = root.findViewById(R.id.txt_tittle);
-        pass = mainActivity.getPass();
+        user = mainActivity.getUser();
 
         btnChange = root.findViewById(R.id.btn_change);
         btnChange.setOnClickListener(new View.OnClickListener() {
@@ -46,7 +47,7 @@ public class ChangePasswordFragment extends Fragment{
                 String p = edtCurrent.getText().toString();
                 String np = edtNewPass.getText().toString();
                 String npa = edtNewPassAgain.getText().toString();
-                if(!p.equals(pass)){
+                if(!p.equals(user.getPassword())){
                     Toast.makeText(mainActivity.getApplicationContext(), "Mật khẩu cũ không đúng !", Toast.LENGTH_SHORT).show();
                 }
                 else {

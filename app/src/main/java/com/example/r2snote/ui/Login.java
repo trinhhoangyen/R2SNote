@@ -50,34 +50,34 @@ public class Login extends AppCompatActivity {
         // Login
         database.child("users").addValueEventListener(new ValueEventListener() {
             Boolean result = new Boolean(false);
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     User u = ds.getValue(User.class);
+                    u.setId(ds.getKey());
                     if(u.getUsername().equals(user) && u.getPassword().equals(pass)) {
                         result = true;
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công!!!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(v.getContext(), MainActivity.class);
-                        intent.putExtra("Username", user);
-                        intent.putExtra("Password", pass);
+                        intent.putExtra("Username", u.getUsername());
+                        intent.putExtra("Password", u.getPassword());
+                        intent.putExtra("Id", u.getId());
                         password = pass;
                         startActivity(intent);
                     }
                 }
+                if (!result){
+                    Toast.makeText(getApplicationContext(), "Đăng nhập không thành công, bạn vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                }
             }
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void sendDataToFragment(String username, String pass){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-    }
-
-    public String getPass(){
-        return password;
     }
 }
