@@ -2,13 +2,13 @@ package com.example.r2snote;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+<<<<<<< HEAD
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,14 +20,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.r2snote.DTO.Note;
 import com.example.r2snote.ui.Login;
+=======
+>>>>>>> a14565c1f04b28a1a88ad54cfd5fed252ca3d144
 import com.example.r2snote.ui.home.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
+<<<<<<< HEAD
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,12 +38,27 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private ViewGroup containerView;
     private TextView txt_password;
+=======
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.example.r2snote.DTO.User;
+
+public class MainActivity extends AppCompatActivity {
+
+    private TextView txt_username;
+>>>>>>> a14565c1f04b28a1a88ad54cfd5fed252ca3d144
     private AppBarConfiguration mAppBarConfiguration;
-    private String pass;
-    // Write a message to the database
+    private User user;
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+<<<<<<< HEAD
             newInstance();
             Intent intent = getIntent();
             String username = intent.getStringExtra("Username");
@@ -97,38 +112,32 @@ public class MainActivity extends AppCompatActivity {
                     return true;
             }
         });
+=======
+        super.onCreate(savedInstanceState);
+        newInstance();
+        Intent intent = getIntent();
+        user = new User(intent.getStringExtra("Username"), intent.getStringExtra("Password"));
+       user.setId(intent.getStringExtra("Id"));
+
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_category, R.id.nav_note, R.id.nav_changepassword)
+                .setDrawerLayout(drawer)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+        txt_username = findViewById(R.id.txt_username);
+>>>>>>> a14565c1f04b28a1a88ad54cfd5fed252ca3d144
     }
 
-    public void createNote(String id, String name, String cate, Date planDate, Date createDate){
-        Note n = new Note( name, cate, planDate, createDate);
-        database.child("notes").child(id).setValue(n);
-    }
-    public void getNote(){
-        // Login
-        database.child("notes").addValueEventListener(new ValueEventListener() {
-            List<Note> list = new ArrayList<>();
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Note u = ds.getValue(Note.class);
-                    list.add(u);
-                }
-                newInstance();
-                for (Note n : list
-                ) {
-                    Log.e(n.getCategory() + " - " + n.getName(), n.getPlanDate().toLocaleString());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -142,14 +151,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void newInstance(){
         HomeFragment n = new HomeFragment();
-        // Supply index input as an argument.
         Bundle args = new Bundle();
         args.putString("ms", "list note" );
         n.setArguments(args);
     }
 
-    public String getPass(){
-        return pass;
+    public User getUser(){
+        User u = new User(user.getUsername(), user.getPassword());
+        u.setId(user.getId());
+        return u;
     }
 
 

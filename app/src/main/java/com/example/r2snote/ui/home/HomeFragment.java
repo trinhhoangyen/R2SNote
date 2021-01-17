@@ -30,12 +30,8 @@ public class HomeFragment extends Fragment {
     String[] months = {"Jan", "Feb", "Mar"};
     int[] earnings = {500,800,2000};
 
-    private HomeViewModel homeViewModel;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         anyChartView = (AnyChartView) root.findViewById(R.id.any_chart_view);
         setupPieChart();

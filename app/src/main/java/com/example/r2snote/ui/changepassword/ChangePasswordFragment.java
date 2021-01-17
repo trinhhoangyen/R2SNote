@@ -14,51 +14,70 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.r2snote.DTO.Note;
+import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
 import com.example.r2snote.R;
-import com.example.r2snote.ui.Login;
-import com.example.r2snote.ui.changepassword.ChangePasswordViewModel;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ChangePasswordFragment extends Fragment{
-    private ChangePasswordViewModel changePasswordViewModel;
     private MainActivity mainActivity;
     private TextView txt_tittle;
     private Button btnChange;
     private EditText edtCurrent, edtNewPass, edtNewPassAgain;
-    private String pass;
+    private User user;
+
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        changePasswordViewModel =
-                new ViewModelProvider(this).get(ChangePasswordViewModel.class);
         View root = inflater.inflate(R.layout.fragment_change_password, container, false);
         mainActivity = (MainActivity) getActivity();
-        txt_tittle = root.findViewById(R.id.txt_tittle);
-        pass = mainActivity.getPass();
+        user = mainActivity.getUser();
+
+        edtCurrent = root.findViewById(R.id.edt_current);
+        edtNewPass = root.findViewById(R.id.edt_newpass);
+        edtNewPassAgain = root.findViewById(R.id.edt_newpassagain);
 
         btnChange = root.findViewById(R.id.btn_change);
         btnChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                edtCurrent = root.findViewById(R.id.edt_current);
-                edtNewPass = root.findViewById(R.id.edt_newpass);
-                edtNewPassAgain = root.findViewById(R.id.edt_newpassagain);
                 String p = edtCurrent.getText().toString();
                 String np = edtNewPass.getText().toString();
                 String npa = edtNewPassAgain.getText().toString();
-                if(!p.equals(pass)){
-                    Toast.makeText(mainActivity.getApplicationContext(), "Mật khẩu cũ không đúng !", Toast.LENGTH_SHORT).show();
+
+                if (!p.equals("") || !np.equals("")) {
+                    if (!p.equals(user.getPassword())) {
+                        Toast.makeText(mainActivity.getApplicationContext(), "Wrong password!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (!npa.equals(np)) {
+                            Toast.makeText(mainActivity.getApplicationContext(), "New password doesn't match!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            User temp = new User(user.getUsername(), np);
+                            temp.setId(user.getId());
+                            changePassword(temp);
+                        }
+                    }
                 }
                 else {
-                    if(!npa.equals(np) || !np.equals(npa) || np.equals("") || npa.equals("")){
-                        Toast.makeText(mainActivity.getApplicationContext(), "Mật khẩu mới không khớp !", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(mainActivity.getApplicationContext(), "Đổi mật khẩu thành công !", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(mainActivity.getApplicationContext(),
+                            "Password change was not successful!", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
         return root;
+    }
+
+    public void changePassword(User u){
+        try {
+            database.child("users").child(u.getId()).setValue(u);
+            Toast.makeText(mainActivity.getApplicationContext(), "Change password successfully", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception err){
+            Toast.makeText(mainActivity.getApplicationContext(), "Password change was not successful: " + err.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

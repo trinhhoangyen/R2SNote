@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/nav_header_desc"
+<<<<<<< HEAD
         android:paddingTop="20dp"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
@@ -38,10 +39,20 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="xxx"
          />
+=======
+        app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:text="Note Management System"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+>>>>>>> a14565c1f04b28a1a88ad54cfd5fed252ca3d144
+
+    <TextView
+        android:id="@+id/txt_username"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 <!--        android:text="@string/nav_header_subtitle"-->
 

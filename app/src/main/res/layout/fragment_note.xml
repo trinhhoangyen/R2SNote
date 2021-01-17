@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,6 +8,7 @@
     android:padding="10dp"
     tools:context=".ui.slideshow.NoteFragment">
 
+<<<<<<< HEAD
     <TextView
         android:id="@+id/txt_test"
         android:layout_width="wrap_content"
@@ -18,4 +20,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </ListView>
+=======
+    <ListView
+        android:id="@+id/listViewNote"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="9dp">
+
+    </ListView>
+
+    <Button
+        android:id="@+id/btnShowPopup"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="+"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:cornerRadius="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+>>>>>>> a14565c1f04b28a1a88ad54cfd5fed252ca3d144
 </androidx.constraintlayout.widget.ConstraintLayout>

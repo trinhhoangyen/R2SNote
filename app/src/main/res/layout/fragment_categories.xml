@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:padding="10dp"
     tools:context=".ui.gallery.CategoriesFragment">
+<<<<<<< HEAD
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -125,6 +126,16 @@
                 android:text="ADD" />
         </LinearLayout>
     </LinearLayout>
+=======
 
+    <ListView
+        android:id="@+id/listViewCategory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="9dp">
+>>>>>>> a14565c1f04b28a1a88ad54cfd5fed252ca3d144
+
+    </ListView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
