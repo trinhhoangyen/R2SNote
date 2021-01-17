@@ -34,7 +34,6 @@ public class ChangePasswordFragment extends Fragment{
                 new ViewModelProvider(this).get(ChangePasswordViewModel.class);
         View root = inflater.inflate(R.layout.fragment_change_password, container, false);
         mainActivity = (MainActivity) getActivity();
-        txt_tittle = root.findViewById(R.id.txt_tittle);
         user = mainActivity.getUser();
 
         btnChange = root.findViewById(R.id.btn_change);
