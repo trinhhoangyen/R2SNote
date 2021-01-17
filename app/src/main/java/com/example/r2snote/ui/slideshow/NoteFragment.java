@@ -170,18 +170,29 @@ public class NoteFragment extends Fragment {
     }
 
     public void createNote(String name, String cate, Date planDate, Date createDate){
-        Note n = new Note(user.getId(), name, cate, planDate, createDate);
-        if(!user.getId().equals("") && !name.equals("") && !cate.equals("")) {
-            UUID uuid = UUID.randomUUID();
-            database.child("notes").child(uuid.toString()).setValue(n);
+        try {
+            Note n = new Note(user.getId(), name, cate, planDate, createDate);
+            if(!user.getId().equals("") && !name.equals("") && !cate.equals("")) {
+                UUID uuid = UUID.randomUUID();
+                database.child("notes").child(uuid.toString()).setValue(n);
+                listNote.clear();
+            }
         }
-        listNote.clear();
+        catch (Exception err){
+            Toast.makeText(mainActivity.getApplicationContext(), err.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void deleteNote(String id){
-        database.child("notes").child(id).removeValue();
-        listNote.clear();
-        Toast.makeText(mainActivity.getApplicationContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+        try {
+            database.child("notes").child(id).removeValue();
+            listNote.clear();
+            Toast.makeText(mainActivity.getApplicationContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception err){
+
+            Toast.makeText(mainActivity.getApplicationContext(), err.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void getListNote(String userId){
