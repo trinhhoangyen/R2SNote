@@ -1,7 +1,6 @@
 package com.example.r2snote.ui.changepassword;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
 import com.example.r2snote.R;
-import com.example.r2snote.ui.Login;
-import com.example.r2snote.ui.changepassword.ChangePasswordViewModel;
 
 public class ChangePasswordFragment extends Fragment{
-    private ChangePasswordViewModel changePasswordViewModel;
     private MainActivity mainActivity;
     private TextView txt_tittle;
     private Button btnChange;
@@ -30,8 +26,6 @@ public class ChangePasswordFragment extends Fragment{
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        changePasswordViewModel =
-                new ViewModelProvider(this).get(ChangePasswordViewModel.class);
         View root = inflater.inflate(R.layout.fragment_change_password, container, false);
         mainActivity = (MainActivity) getActivity();
         user = mainActivity.getUser();

@@ -47,13 +47,12 @@ import java.util.UUID;
 
 public class NoteFragment extends Fragment {
     private MainActivity mainActivity;
+    private User user;
 
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    private User user;
     ArrayList<Note> listNote;
     ArrayList<Category> listCategory;
 
-    private NoteViewModel noteViewModel;
     NoteListViewAdapter noteListViewAdapter;
     ListView listViewNote;
 
@@ -62,13 +61,14 @@ public class NoteFragment extends Fragment {
     String TAG = "Note";
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        noteViewModel =
-                new ViewModelProvider(this).get(NoteViewModel.class);
         View root = inflater.inflate(R.layout.fragment_note, container, false);
+
         mainActivity = (MainActivity) getActivity();
-        listViewNote = (ListView) root.findViewById(R.id.listViewNote);
-        btnShowPopup = (Button) root.findViewById(R.id.btnShowPopup);
         user = mainActivity.getUser();
+
+        listViewNote = (ListView) root.findViewById(R.id.listViewNote);
+
+        btnShowPopup = (Button) root.findViewById(R.id.btnShowPopup);
         getListNote(user.getId());
         getListCategory();
 
@@ -284,8 +284,6 @@ public class NoteFragment extends Fragment {
     }
 
     public void getListCategory(){
-        Log.e("---------","Vô getcate");
-
         listCategory  = new ArrayList<Category>();
         database.child("categories").addValueEventListener(new ValueEventListener() {
             @Override
