@@ -3,7 +3,8 @@ package com.example.r2snote.DTO;
 import java.util.Date;
 
 public class Note {
-    private String name,category, userId;
+
+    private String id,name,category, userId;
     private Date planDate, createDate;
     public Note() {
 
@@ -18,6 +19,13 @@ public class Note {
     }
 
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
     public String getUserId() {
         return userId;
     }

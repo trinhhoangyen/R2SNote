@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -72,72 +73,82 @@ public class NoteFragment extends Fragment {
         btnShowPopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View popupView = getLayoutInflater().inflate(R.layout.popup_add_note, null);
-                PopupWindow popupWindow = new PopupWindow(popupView, 600, 700, true);
-                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                EditText etdNewNoteName = (EditText) popupView.findViewById(R.id.etdNewNoteName);
+                showPopup(view);
+            }
+        });
 
-                Spinner spnCategory = popupView.findViewById(R.id.spnCategpry);
-                ArrayList<String> items = new ArrayList<>();
-                for (Category c : listCategory){
-                    items.add(c.getName());
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
-                spnCategory.setAdapter(adapter);
-
-                EditText edtPlanDate = popupView.findViewById(R.id.edtPlanDate);
-                edtPlanDate.setInputType(InputType.TYPE_NULL);
-                edtPlanDate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final Calendar cldr = Calendar.getInstance();
-                        int day = cldr.get(Calendar.DAY_OF_MONTH);
-                        int month = cldr.get(Calendar.MONTH);
-                        int year = cldr.get(Calendar.YEAR);
-                        DatePickerDialog picker =  new DatePickerDialog(getActivity(),
-                                new DatePickerDialog.OnDateSetListener() {
-                                    @Override
-                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                        edtPlanDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                    }
-                                }, year, month, day);
-                        picker.show();
-                    }
-                });
-
-                Button btnAddNote = popupView.findViewById(R.id.btnAddNote);
-                btnAddNote.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String name = etdNewNoteName.getText().toString();
-                        String cate = spnCategory.getSelectedItem().toString();
-                        Date cd = new Date();
-                        Date pd = null;
-
-                        try {
-                            pd = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (cate != null && name != null && pd != null) {
-                            UUID uuid = UUID.randomUUID();
-                            createNote(uuid.toString(),name, cate.toString(), pd, cd );
-                            popupWindow.dismiss();
-                        }
-//                        Log.e("name: "+name + "cate: " +cate, "pd: " + pd.toLocaleString() + "cd: " + cd.toLocaleString());
-                    }
-                });
+        listViewNote.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.e("---------", noteListViewAdapter.getNoteId(i));
             }
         });
 
         return root;
     }
 
-    public void createNote(String id, String name, String cate, Date planDate, Date createDate){
+    public void showPopup(View view){
+        View popupView = getLayoutInflater().inflate(R.layout.popup_add_note, null);
+        PopupWindow popupWindow = new PopupWindow(popupView, 600, 700, true);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        EditText etdNewNoteName = (EditText) popupView.findViewById(R.id.etdNewNoteName);
+
+        Spinner spnCategory = popupView.findViewById(R.id.spnCategpry);
+        ArrayList<String> items = new ArrayList<>();
+        for (Category c : listCategory){
+            items.add(c.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+        spnCategory.setAdapter(adapter);
+
+        EditText edtPlanDate = popupView.findViewById(R.id.edtPlanDate);
+        edtPlanDate.setInputType(InputType.TYPE_NULL);
+        edtPlanDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                DatePickerDialog picker =  new DatePickerDialog(getActivity(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                edtPlanDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
+
+        Button btnAddNote = popupView.findViewById(R.id.btnAddNote);
+        btnAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = etdNewNoteName.getText().toString();
+                String cate = spnCategory.getSelectedItem().toString();
+                Date cd = new Date();
+                Date pd = null;
+
+                try {
+                    pd = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if (cate != null && name != null && pd != null) {
+                    createNote(name, cate.toString(), pd, cd );
+                    popupWindow.dismiss();
+                }
+            }
+        });
+    }
+
+    public void createNote(String name, String cate, Date planDate, Date createDate){
         Note n = new Note(user.getId(), name, cate, planDate, createDate);
         if(!user.getId().equals("") && !name.equals("") && !cate.equals("")) {
-            database.child("notes").child(id).setValue(n);
+            UUID uuid = UUID.randomUUID();
+            database.child("notes").child(uuid.toString()).setValue(n);
         }
         listNote.clear();
     }
@@ -149,6 +160,7 @@ public class NoteFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     Note note = ds.getValue(Note.class);
+                    note.setId(ds.getKey());
                     if (note != null && !note.getUserId().equals("")) {
                         if (note.getUserId().equals(user.getId())) {
                             listNote.add(note);
@@ -156,7 +168,6 @@ public class NoteFragment extends Fragment {
                     }
                 }
 
-                Log.e("-----size in getNote", listNote.size() + "");
                 if (listNote.size() > 0){
                     noteListViewAdapter = new NoteListViewAdapter(listNote);
                     listViewNote.setAdapter(noteListViewAdapter);
@@ -217,28 +228,26 @@ class NoteListViewAdapter extends BaseAdapter {
     }
 
     public String getNoteId(int position) {
-        return listNote.get(position).getUserId();
+        return listNote.get(position).getId();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //convertView là View của phần tử ListView, nếu convertView != null nghĩa là
-        //View này được sử dụng lại, chỉ việc cập nhật nội dung mới
-        //Nếu null cần tạo mới
-
         LinearLayoutCompat viewNote;
         if (convertView == null) {
             viewNote = (LinearLayoutCompat) View.inflate(parent.getContext(), R.layout.activity_note_item, null);
         } else viewNote = (LinearLayoutCompat) convertView;
 
-        //Bind sữ liệu phần tử vào View
         Note note = (Note) getItem(position);
         ((TextView) viewNote.findViewById(R.id.txtNameNote)).setText(("Name: " +  note.getName()));
         ((TextView) viewNote.findViewById(R.id.txtCategoryNote)).setText(String.format("Category: %s", note.getCategory()));
-        long planDate = note.getPlanDate().getTime();
-        ((TextView) viewNote.findViewById(R.id.txtPlanDateNote)).setText(String.format("Plan date: %tc", planDate));
-        long createDate = note.getCreateDate().getTime();
-        ((TextView) viewNote.findViewById(R.id.txtCreateDateNote)).setText(String.format("Create date: %d", createDate));
+        String planDate = note.getPlanDate().getDate() + "/" + (note.getPlanDate().getMonth()+1) + "/"
+                + (note.getPlanDate().getYear() + 1900);
+        ((TextView) viewNote.findViewById(R.id.txtPlanDateNote)).setText(String.format("Plan date: %s", planDate));
+        String createDate = note.getCreateDate().getDate() + "/" + (note.getCreateDate().getMonth()+1)
+                + "/" + (note.getCreateDate().getYear() + 1900) + " " + note.getCreateDate().getHours()
+                + ":" + note.getCreateDate().getMinutes() + ":" + note.getCreateDate().getSeconds();
+        ((TextView) viewNote.findViewById(R.id.txtCreateDateNote)).setText(String.format("Create date: %s", createDate));
 
         return viewNote;
     }
