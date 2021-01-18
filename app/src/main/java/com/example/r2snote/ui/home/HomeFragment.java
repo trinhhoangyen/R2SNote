@@ -15,6 +15,7 @@ import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
+
 import com.example.r2snote.DTO.Note;
 import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
@@ -26,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -36,8 +38,10 @@ public class HomeFragment extends Fragment {
     AnyChartView anyChartView;
     ArrayList<Note> listNote;
 
-    String[] months = {"Jan", "Feb", "Mar"};
-    int[] earnings = {500,800,2000};
+    String[] status = {"Done","Pending","Processing"};
+    int pending = 0;
+    int done = 0;
+    int processing = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,19 +49,27 @@ public class HomeFragment extends Fragment {
         anyChartView = (AnyChartView) root.findViewById(R.id.any_chart_view);
         mainActivity = (MainActivity) getActivity();
         user = mainActivity.getUser();
-        setupPieChart();
         getListNote();
 
         return root;
     }
 
-    public void setupPieChart(){
+    public void setupPieChart(HashMap<String, Integer> soluong){
         Pie pie = AnyChart.pie();
 
         List<DataEntry> dataEntries = new ArrayList<>();
 
-        for(int i = 0; i < months.length; i++){
-            dataEntries.add(new ValueDataEntry(months[i], earnings[i]));
+        for(int i = 0; i < status.length; i++){
+            if(status[i].equals("Done")){
+                dataEntries.add(new ValueDataEntry(status[i], soluong.get("Done")));
+            }
+            if(status[i].equals("Pending")){
+                dataEntries.add(new ValueDataEntry(status[i], soluong.get("Pending")));
+            }
+            if(status[i].equals("Processing")){
+                dataEntries.add(new ValueDataEntry(status[i], soluong.get("Processing")));
+            }
+
         }
 
         pie.data(dataEntries);
@@ -78,9 +90,23 @@ public class HomeFragment extends Fragment {
                         }
                     }
                 }
-                for (Note n: listNote ) {
-                    Log.e("----------", n.getName());
+                HashMap<String, Integer> soluong = new HashMap<String, Integer>();
+                for(Note n : listNote){
+                    if(n.getStatus().equals("Done")) {
+                        done++;
+                    }
+                    if(n.getStatus().equals("Pending")) {
+                        pending++;
+                    }
+                    if(n.getStatus().equals("Processing")) {
+                        processing++;
+                    }
                 }
+                soluong.put("Done", done);
+                soluong.put("Processing", processing);
+                soluong.put("Pending", processing);
+
+                setupPieChart(soluong);
             }
 
             @Override

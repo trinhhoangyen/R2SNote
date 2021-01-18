@@ -28,4 +28,16 @@
         android:name="com.example.r2snote.ui.changepassword.ChangePasswordFragment"
         android:label="Change Password"
         tools:layout="@layout/fragment_change_password" />
+
+    <fragment
+        android:id="@+id/nav_priority"
+        android:name="com.example.r2snote.ui.prioity.PriorityFragment"
+        android:label="Priority"
+        tools:layout="@layout/fragment_priority" />
+
+    <fragment
+        android:id="@+id/nav_status"
+        android:name="com.example.r2snote.ui.status.StatusFragment"
+        android:label="Status"
+        tools:layout="@layout/fragment_status" />
 </navigation>
