@@ -9,7 +9,7 @@
         android:id="@+id/txtTittle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="75dp"
         android:text="Regrister Form"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/edtNewUsername"
         android:layout_width="365dp"
         android:layout_height="39dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="130dp"
         android:ems="10"
         android:hint="Enter username"
         android:inputType="textEmailAddress"
@@ -29,11 +29,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/edtNewPassword"
+        android:layout_width="365dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="180dp"
+        android:ems="10"
+        android:hint="Enter password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/edtConfirmPassword"
+        android:layout_width="365dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="230dp"
+        android:ems="10"
+        android:hint="Confirm password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
     <TextView
         android:id="@+id/txtLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="308dp"
+        android:layout_marginTop="280dp"
         android:layout_marginEnd="20dp"
         android:text="You have a account? Login"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,37 +70,11 @@
         android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="340dp"
+        android:layout_marginTop="310dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:text="REGISTER"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <EditText
-        android:id="@+id/edtConfirmPassword"
-        android:layout_width="365dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="256dp"
-        android:ems="10"
-        android:hint="Confirm password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <EditText
-        android:id="@+id/edtNewPassword"
-        android:layout_width="365dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="196dp"
-        android:ems="10"
-        android:hint="Enter password"
-        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
