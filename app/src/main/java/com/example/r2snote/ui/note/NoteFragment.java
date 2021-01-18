@@ -155,7 +155,7 @@ public class NoteFragment extends Fragment {
         // show spinner priority
         ArrayList<String> itemsPriority = new ArrayList<>();
         int positionSpnPriority = 0;
-        for (Status s : listStatus){
+        for (Priority s : listPriority){
             itemsPriority.add(s.getName());
             if (s.getName().equals(note.getPriority())){
                 positionSpnPriority = itemsPriority.size()-1;
