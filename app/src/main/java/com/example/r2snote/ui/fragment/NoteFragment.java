@@ -1,9 +1,8 @@
-package com.example.r2snote.ui.note;
+package com.example.r2snote.ui.fragment;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;

@@ -1,4 +1,4 @@
-package com.example.r2snote.ui.changepassword;
+package com.example.r2snote.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -2,14 +2,13 @@ package com.example.r2snote;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.r2snote.ui.Login;
-import com.example.r2snote.ui.home.HomeFragment;
+import com.example.r2snote.ui.fragment.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

@@ -1,4 +1,4 @@
-package com.example.r2snote.ui.home;
+package com.example.r2snote.ui.fragment;
 
 import android.os.Bundle;
 import android.util.Log;

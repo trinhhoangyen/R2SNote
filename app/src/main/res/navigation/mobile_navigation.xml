@@ -7,37 +7,37 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.r2snote.ui.home.HomeFragment"
+        android:name="com.example.r2snote.ui.fragment.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_category"
-        android:name="com.example.r2snote.ui.category.CategoriesFragment"
+        android:name="com.example.r2snote.ui.fragment.CategoriesFragment"
         android:label="Category"
         tools:layout="@layout/fragment_categories" />
 
     <fragment
         android:id="@+id/nav_note"
-        android:name="com.example.r2snote.ui.note.NoteFragment"
+        android:name="com.example.r2snote.ui.fragment.NoteFragment"
         android:label="Note"
         tools:layout="@layout/fragment_note" />
 
     <fragment
         android:id="@+id/nav_changepassword"
-        android:name="com.example.r2snote.ui.changepassword.ChangePasswordFragment"
+        android:name="com.example.r2snote.ui.fragment.ChangePasswordFragment"
         android:label="Change Password"
         tools:layout="@layout/fragment_change_password" />
 
     <fragment
         android:id="@+id/nav_priority"
-        android:name="com.example.r2snote.ui.prioity.PriorityFragment"
+        android:name="com.example.r2snote.ui.fragment.PriorityFragment"
         android:label="Priority"
         tools:layout="@layout/fragment_priority" />
 
     <fragment
         android:id="@+id/nav_status"
-        android:name="com.example.r2snote.ui.status.StatusFragment"
+        android:name="com.example.r2snote.ui.fragment.StatusFragment"
         android:label="Status"
         tools:layout="@layout/fragment_status" />
 </navigation>

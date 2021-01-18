@@ -1,11 +1,6 @@
-package com.example.r2snote.ui.status;
+package com.example.r2snote.ui.fragment;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.fragment.app.Fragment;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +13,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.r2snote.DTO.Status;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.fragment.app.Fragment;
+
+import com.example.r2snote.DTO.Category;
 import com.example.r2snote.MainActivity;
 import com.example.r2snote.R;
 import com.google.firebase.database.DataSnapshot;
@@ -31,25 +30,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-public class StatusFragment extends Fragment {
+public class CategoriesFragment extends Fragment {
     private MainActivity mainActivity = (MainActivity) getActivity();
 
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    ArrayList<Status> list;
-    ListView listView;
-    ListViewAdapter listViewAdapter;
-    private Button btnShowPopup;
+    ArrayList<Category> listCategory;
+    CategoryListViewAdapter categoryListViewAdapter;
+    ListView listViewCategory;
+    private Button btnPopupCategory;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
 
-        listView = (ListView) root.findViewById(R.id.listItem);
-        btnShowPopup = (Button) root.findViewById(R.id.btnShowPopup);
+        listViewCategory = (ListView) root.findViewById(R.id.listItem);
+        btnPopupCategory = (Button) root.findViewById(R.id.btnShowPopup);
         getList();
 
-        btnShowPopup.setOnClickListener(new View.OnClickListener() {
+        btnPopupCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPopup(view);
@@ -68,36 +66,36 @@ public class StatusFragment extends Fragment {
         Button btnAdd = popupView.findViewById(R.id.btnAdd);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = edtNameAdd.getText().toString();
-                if (name != null) {
-                    check(name, view);
-                    popupWindow.dismiss();
+                @Override
+                public void onClick(View view) {
+                    String name = edtNameAdd.getText().toString();
+                    if (name != null) {
+                        check(name, view);
+                        popupWindow.dismiss();
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "Add was not successful", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else {
-                    Toast.makeText(getActivity(), "Add was not successful", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+            });
     }
 
     public void getList(){
-        list  = new ArrayList<>();
-        database.child("status").addValueEventListener(new ValueEventListener() {
+        listCategory  = new ArrayList<>();
+        database.child("categories").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Status item = ds.getValue(Status.class);
-                    list.add(item);
+                    Category item = ds.getValue(Category.class);
+                    listCategory.add(item);
                 }
-                if (list.size() > 0){
-                    listViewAdapter = new ListViewAdapter(list);
-                    listView.setAdapter(listViewAdapter);
-                }
+            if (listCategory.size() > 0){
+                categoryListViewAdapter = new CategoryListViewAdapter(listCategory);
+                listViewCategory.setAdapter(categoryListViewAdapter);
+            }
             }
 
-            @Override
+        @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
 
@@ -108,24 +106,24 @@ public class StatusFragment extends Fragment {
     public void add(String name){
         try {
             Date createDate = new Date();
-            Status item = new Status(name,createDate);
-            UUID uuid = UUID.randomUUID();
-            database.child("status").child(uuid.toString()).setValue(item);
-            list.clear();
-            Toast.makeText(getActivity(), "Add successfully", Toast.LENGTH_SHORT).show();
+            Category item = new Category(name,createDate);
+                UUID uuid = UUID.randomUUID();
+                database.child("categories").child(uuid.toString()).setValue(item);
+                listCategory.clear();
+                Toast.makeText(getActivity(), "Add successfully", Toast.LENGTH_SHORT).show();
         }
         catch (Exception err){
-            Toast.makeText(getActivity(), "Add was not successful: " + err.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Add was not successful: " +err.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
     public void check(String name, View v){
-        database.child("status").addValueEventListener(new ValueEventListener() {
+        database.child("categories").addValueEventListener(new ValueEventListener() {
             Boolean result = new Boolean(true);
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Status item = ds.getValue(Status.class);
+                    Category item = ds.getValue(Category.class);
                     if(item.getName().equals(name)) {
                         result = false;
                     }
@@ -143,23 +141,25 @@ public class StatusFragment extends Fragment {
             }
         });
     }
+
 }
 
-class ListViewAdapter extends BaseAdapter {
+class CategoryListViewAdapter extends BaseAdapter {
 
-    final ArrayList<Status> list;
-    ListViewAdapter(ArrayList<Status> list) {
-        this.list = list;
+    final ArrayList<Category> listCate;
+
+    CategoryListViewAdapter(ArrayList<Category> listCate) {
+        this.listCate = listCate;
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return listCate.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return list.get(position);
+        return listCate.get(position);
     }
 
     @Override
@@ -174,7 +174,8 @@ class ListViewAdapter extends BaseAdapter {
             view = (LinearLayoutCompat) View.inflate(parent.getContext(), R.layout.activity_list_item, null);
         } else view = (LinearLayoutCompat) convertView;
 
-        Status item = (Status) getItem(position);
+        Category item = (Category) getItem(position);
+
         ((TextView) view.findViewById(R.id.txtNameCate)).setText(("Name: " +  item.getName()));
         String cd = item.getCreateDate().getDate() + "/" + (item.getCreateDate().getMonth()+1) + "/"
                 + (item.getCreateDate().getYear() + 1900);
