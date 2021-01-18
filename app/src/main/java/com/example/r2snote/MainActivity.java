@@ -3,6 +3,7 @@ package com.example.r2snote;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.r2snote.ui.home.HomeFragment;
@@ -22,17 +23,17 @@ import com.example.r2snote.DTO.User;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView txt_username;
     private AppBarConfiguration mAppBarConfiguration;
     private User user;
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         newInstance();
         Intent intent = getIntent();
         user = new User(intent.getStringExtra("Username"), intent.getStringExtra("Password"));
-       user.setId(intent.getStringExtra("Id"));
+        user.setId(intent.getStringExtra("Id"));
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -41,13 +42,12 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_category, R.id.nav_note, R.id.nav_changepassword)
+                R.id.nav_home, R.id.nav_category, R.id.nav_note, R.id.nav_changepassword, R.id.nav_changepassword)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        txt_username = findViewById(R.id.txt_username);
     }
 
     @Override

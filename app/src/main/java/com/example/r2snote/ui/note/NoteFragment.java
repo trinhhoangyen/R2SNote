@@ -1,4 +1,4 @@
-package com.example.r2snote.ui.slideshow;
+package com.example.r2snote.ui.note;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -25,7 +25,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.r2snote.DTO.Category;
 import com.example.r2snote.DTO.Note;

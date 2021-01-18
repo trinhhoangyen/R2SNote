@@ -1,4 +1,4 @@
-package com.example.r2snote.ui.gallery;
+package com.example.r2snote.ui.category;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

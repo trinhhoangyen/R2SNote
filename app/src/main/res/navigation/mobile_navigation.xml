@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_category"
-        android:name="com.example.r2snote.ui.gallery.CategoriesFragment"
+        android:name="com.example.r2snote.ui.category.CategoriesFragment"
         android:label="Category"
         tools:layout="@layout/fragment_categories" />
 
     <fragment
         android:id="@+id/nav_note"
-        android:name="com.example.r2snote.ui.slideshow.NoteFragment"
+        android:name="com.example.r2snote.ui.note.NoteFragment"
         android:label="Note"
         tools:layout="@layout/fragment_note" />
 

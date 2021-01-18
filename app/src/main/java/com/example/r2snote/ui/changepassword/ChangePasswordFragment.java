@@ -56,8 +56,7 @@ public class ChangePasswordFragment extends Fragment{
                             Toast.makeText(mainActivity.getApplicationContext(), "New password doesn't match!", Toast.LENGTH_SHORT).show();
                         } else {
                             User temp = new User(user.getUsername(), np);
-                            temp.setId(user.getId());
-                            changePassword(temp);
+                            changePassword(user.getId(), temp);
                         }
                     }
                 }
@@ -71,9 +70,9 @@ public class ChangePasswordFragment extends Fragment{
         return root;
     }
 
-    public void changePassword(User u){
+    public void changePassword(String id, User u){
         try {
-            database.child("users").child(u.getId()).setValue(u);
+            database.child("users").child(id).setValue(u);
             Toast.makeText(mainActivity.getApplicationContext(), "Change password successfully", Toast.LENGTH_SHORT).show();
         }
         catch (Exception err){
