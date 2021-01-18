@@ -19,7 +19,7 @@
         android:id="@+id/etdNewNoteName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Enter note name" />
 
@@ -27,14 +27,28 @@
         android:id="@+id/spnCategpry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="85dp"
+        android:layout_marginTop="80dp"
+        android:background="@color/white" />
+
+    <Spinner
+        android:id="@+id/spnStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130dp"
+        android:background="@color/white" />
+
+    <Spinner
+        android:id="@+id/spnPriority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
         android:background="@color/white" />
 
     <EditText
         android:id="@+id/edtPlanDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="230dp"
         android:ems="10"
         android:hint="Select plan date" />
 

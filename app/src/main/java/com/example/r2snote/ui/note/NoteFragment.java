@@ -28,6 +28,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.r2snote.DTO.Category;
 import com.example.r2snote.DTO.Note;
+import com.example.r2snote.DTO.Priority;
+import com.example.r2snote.DTO.Status;
 import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
 import com.example.r2snote.R;
@@ -51,6 +53,8 @@ public class NoteFragment extends Fragment {
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     ArrayList<Note> listNote;
     ArrayList<Category> listCategory;
+    ArrayList<Status> listStatus;
+    ArrayList<Priority> listPriority;
 
     NoteListViewAdapter noteListViewAdapter;
     ListView listViewNote;
@@ -117,18 +121,35 @@ public class NoteFragment extends Fragment {
         etdNewNoteName.setText(note.getName());
 
         Spinner spnCategory = popupView.findViewById(R.id.spnCategpry);
+        Spinner spnStatus = popupView.findViewById(R.id.spnStatus);
+        Spinner spnPriority = popupView.findViewById(R.id.spnPriority);
 
-        ArrayList<String> items = new ArrayList<>();
+        // show spinner category
+        ArrayList<String> itemsCate = new ArrayList<>();
         int positionSpnCategory = 0;
         for (Category c : listCategory){
-            items.add(c.getName());
+            itemsCate.add(c.getName());
             if (c.getName().equals(note.getCategory())){
-                positionSpnCategory = items.size()-1;
+                positionSpnCategory = itemsCate.size()-1;
             }
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
-        spnCategory.setAdapter(adapter);
+        ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, itemsCate);
+        spnCategory.setAdapter(adapterCategory);
         spnCategory.setSelection(positionSpnCategory);
+
+        // show spinner category
+        ArrayList<String> itemsStatus = new ArrayList<>();
+        int positionSpnStatus = 0;
+        for (Status s : listStatus){
+            itemsStatus.add(s.getName());
+            if (s.getName().equals(note.getStatus())){
+                positionSpnStatus = itemsStatus.size()-1;
+            }
+        }
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, itemsStatus);
+        spnStatus.setAdapter(adapterStatus);
+        spnStatus.setSelection(positionSpnStatus);
+
 
         EditText edtPlanDate = popupView.findViewById(R.id.edtPlanDate);
         edtPlanDate.setInputType(InputType.TYPE_NULL);
@@ -153,29 +174,29 @@ public class NoteFragment extends Fragment {
             }
         });
 
-
         TextView txtTypePopupNote = popupView.findViewById(R.id.txtTypePopupNote);
         Button btnActivity = popupView.findViewById(R.id.btnActivity);
+
+        String name = etdNewNoteName.getText().toString();
+        String cate = spnCategory.getSelectedItem().toString();
+        String status = spnStatus.getSelectedItem().toString();
+        String priority = spnPriority.getSelectedItem().toString();
+        Date createDate = new Date();
         if (type == 1) {
             txtTypePopupNote.setText("Edit note");
             btnActivity.setText("EDIT NOTE");
             btnActivity.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View view) {
-                    String name = etdNewNoteName.getText().toString();
-                    String cate = spnCategory.getSelectedItem().toString();
-                    Date cd = new Date();
-                    Date pd = null;
-
+                    Date planDate = null;
                     try {
-                        pd = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
+                        planDate = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
-                    if (cate != null && name != null && pd != null) {
-                        Note temp = new Note(note.getUserId(), name, cate, pd, cd);
+                    if (cate != null && name != null && planDate != null) {
+                        Note temp = new Note(note.getUserId(), name, cate,status, priority, planDate, createDate);
                         temp.setId(note.getId());
                         updateNote(temp);
                         Toast.makeText(mainActivity.getApplicationContext(), "Edit successfully", Toast.LENGTH_SHORT).show();
@@ -191,19 +212,15 @@ public class NoteFragment extends Fragment {
             btnActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String name = etdNewNoteName.getText().toString();
-                    String cate = spnCategory.getSelectedItem().toString();
-                    Date cd = new Date();
-                    Date pd = null;
-
+                    Date planDate = null;
                     try {
-                        pd = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
+                        planDate = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
-                    if (cate != null && name != null && pd != null) {
-                        addNote(name, cate.toString(), pd, cd );
+                    if (cate != null && name != null && planDate != null) {
+                        addNote(name, cate, status, priority, planDate, createDate );
                         Toast.makeText(mainActivity.getApplicationContext(), "Add successfully", Toast.LENGTH_SHORT).show();
                         popupWindow.dismiss();
                     }
@@ -215,9 +232,9 @@ public class NoteFragment extends Fragment {
         }
     }
 
-    public void addNote(String name, String cate, Date planDate, Date createDate){
+    public void addNote(String name, String cate,String status,String priority, Date planDate, Date createDate){
         try {
-            Note n = new Note(user.getId(), name, cate, planDate, createDate);
+            Note n = new Note(user.getId(), name, cate,status, priority,planDate, createDate);
             if(!user.getId().equals("") && !name.equals("") && !cate.equals("")) {
                 UUID uuid = UUID.randomUUID();
                 database.child("notes").child(uuid.toString()).setValue(n);
@@ -299,6 +316,44 @@ public class NoteFragment extends Fragment {
             }
         });
     }
+
+    public void getListStatus(){
+        listStatus  = new ArrayList<Status>();
+        database.child("status").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Status category = ds.getValue(Status.class);
+                    listStatus.add(category);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mainActivity.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    public void getListPriority(){
+        listPriority  = new ArrayList<Priority>();
+        database.child("priority").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Priority category = ds.getValue(Priority.class);
+                    listPriority.add(category);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mainActivity.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
 }
 
 class NoteListViewAdapter extends BaseAdapter {
@@ -339,13 +394,13 @@ class NoteListViewAdapter extends BaseAdapter {
         Note note = (Note) getItem(position);
         ((TextView) viewNote.findViewById(R.id.txtNameNote)).setText(("Name: " +  note.getName()));
         ((TextView) viewNote.findViewById(R.id.txtCategoryNote)).setText(String.format("Category: %s", note.getCategory()));
-        String planDate = note.getPlanDate().getDate() + "/" + (note.getPlanDate().getMonth()+1) + "/"
+        String pd = note.getPlanDate().getDate() + "/" + (note.getPlanDate().getMonth()+1) + "/"
                 + (note.getPlanDate().getYear() + 1900);
-        ((TextView) viewNote.findViewById(R.id.txtPlanDateNote)).setText(String.format("Plan date: %s", planDate));
-        String createDate = note.getCreateDate().getDate() + "/" + (note.getCreateDate().getMonth()+1)
+        ((TextView) viewNote.findViewById(R.id.txtPlanDateNote)).setText(String.format("Plan date: %s", pd));
+        String cd = note.getCreateDate().getDate() + "/" + (note.getCreateDate().getMonth()+1)
                 + "/" + (note.getCreateDate().getYear() + 1900) + " " + note.getCreateDate().getHours()
                 + ":" + note.getCreateDate().getMinutes() + ":" + note.getCreateDate().getSeconds();
-        ((TextView) viewNote.findViewById(R.id.txtCreateDateNote)).setText(String.format("Create date: %s", createDate));
+        ((TextView) viewNote.findViewById(R.id.txtCreateDateNote)).setText(String.format("Create date: %s", cd));
 
         return viewNote;
     }
