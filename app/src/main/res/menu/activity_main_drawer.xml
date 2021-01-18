@@ -17,6 +17,14 @@
             android:icon="@drawable/ic_menu_note"
             android:title="Note" />
         <item
+            android:id="@+id/nav_priority"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Priority" />
+        <item
+            android:id="@+id/nav_status"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Status" />
+        <item
             android:id="@+id/nav_changepassword"
             android:icon="@drawable/ic_menu_change"
             android:title="Change Password" />
