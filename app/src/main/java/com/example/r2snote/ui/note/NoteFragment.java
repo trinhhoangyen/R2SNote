@@ -415,6 +415,8 @@ class NoteListViewAdapter extends BaseAdapter {
         Note note = (Note) getItem(position);
         ((TextView) viewNote.findViewById(R.id.txtNameNote)).setText(("Name: " +  note.getName()));
         ((TextView) viewNote.findViewById(R.id.txtCategoryNote)).setText(String.format("Category: %s", note.getCategory()));
+        ((TextView) viewNote.findViewById(R.id.txtStatusNote)).setText(String.format("Status: %s", note.getStatus()));
+        ((TextView) viewNote.findViewById(R.id.txtPriorityNote)).setText(String.format("Priority: %s", note.getPriority()));
         String pd = note.getPlanDate().getDate() + "/" + (note.getPlanDate().getMonth()+1) + "/"
                 + (note.getPlanDate().getYear() + 1900);
         ((TextView) viewNote.findViewById(R.id.txtPlanDateNote)).setText(String.format("Plan date: %s", pd));
