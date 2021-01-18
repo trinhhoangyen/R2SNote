@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
         user = new User(intent.getStringExtra("Username"), intent.getStringExtra("Password"));
         user.setId(intent.getStringExtra("Id"));
 
-        user = new User("admin", "2");
-        user.setId("001");
+//        user = new User("admin", "2");
+//        user.setId("001");
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
