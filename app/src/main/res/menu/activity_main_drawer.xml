@@ -20,5 +20,6 @@
             android:id="@+id/nav_changepassword"
             android:icon="@drawable/ic_menu_change"
             android:title="Change Password" />
+
     </group>
 </menu>

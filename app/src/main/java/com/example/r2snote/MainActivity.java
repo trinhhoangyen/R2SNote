@@ -2,10 +2,13 @@ package com.example.r2snote;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.r2snote.ui.Login;
 import com.example.r2snote.ui.home.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
@@ -35,8 +38,12 @@ public class MainActivity extends AppCompatActivity {
         user = new User(intent.getStringExtra("Username"), intent.getStringExtra("Password"));
         user.setId(intent.getStringExtra("Id"));
 
+        user = new User("admin", "2");
+        user.setId("001");
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -45,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_home, R.id.nav_category, R.id.nav_note, R.id.nav_changepassword, R.id.nav_changepassword)
                 .setDrawerLayout(drawer)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -52,6 +60,20 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.txt_username);
         navUsername.setText(user.getUsername());
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_logout:
+                        Intent intentLogin = new Intent(getApplication(), Login.class);
+                        startActivity(intentLogin);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
     }
 
     @Override
@@ -79,6 +101,4 @@ public class MainActivity extends AppCompatActivity {
         u.setId(user.getId());
         return u;
     }
-
-
 }
