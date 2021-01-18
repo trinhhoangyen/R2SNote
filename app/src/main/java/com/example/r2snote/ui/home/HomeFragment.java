@@ -80,10 +80,8 @@ public class HomeFragment extends Fragment {
                 }
                 for (Note n: listNote ) {
                     Log.e("----------", n.getName());
-
                 }
             }
-
 
             @Override
             public void onCancelled(DatabaseError error) {

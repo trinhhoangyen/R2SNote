@@ -116,7 +116,7 @@ public class NoteFragment extends Fragment {
 
     public void showPopupNote(View view, Note note, int type){
         View popupView = getLayoutInflater().inflate(R.layout.popup_note, null);
-        PopupWindow popupWindow = new PopupWindow(popupView, 800, 800, true);
+        PopupWindow popupWindow = new PopupWindow(popupView, 800, 1050, true);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
         EditText etdNewNoteName = (EditText) popupView.findViewById(R.id.etdNewNoteName);
@@ -193,11 +193,6 @@ public class NoteFragment extends Fragment {
         TextView txtTypePopupNote = popupView.findViewById(R.id.txtTypePopupNote);
         Button btnActivity = popupView.findViewById(R.id.btnActivity);
 
-        String name = etdNewNoteName.getText().toString();
-        String cate = spnCategory.getSelectedItem().toString();
-        String status = spnStatus.getSelectedItem().toString();
-        String priority = spnPriority.getSelectedItem().toString();
-        Date createDate = new Date();
         if (type == 1) {
             txtTypePopupNote.setText("Edit note");
             btnActivity.setText("EDIT NOTE");

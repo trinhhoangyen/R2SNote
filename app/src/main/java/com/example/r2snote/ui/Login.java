@@ -48,6 +48,11 @@ public class Login extends AppCompatActivity {
                 edtPassword.setText(pass);
             }
         }
+        else {
+            edtUsername.setText("admin");
+            edtPassword.setText("1");
+
+        }
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
