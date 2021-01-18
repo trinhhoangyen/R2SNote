@@ -20,12 +20,11 @@ public class Note {
         this.createDate = createDate;
     }
 
-
-    public String getId() {
-        return id;
-    }
     public void setId(String id) {
         this.id = id;
+    }
+    public String getId() {
+        return id;
     }
     public String getUserId() {
         return userId;
@@ -33,11 +32,9 @@ public class Note {
     public Date getPlanDate() {
         return planDate;
     }
-
     public Date getCreateDate() {
         return createDate;
     }
-
     public String getName() {
         return name;
     }

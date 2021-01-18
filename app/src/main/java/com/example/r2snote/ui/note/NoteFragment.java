@@ -166,12 +166,30 @@ public class NoteFragment extends Fragment {
         spnPriority.setSelection(positionSpnPriority);
 
         //show DatePicker planDate
-        EditText edtPlanDate = popupView.findViewById(R.id.edtPlanDate);
-        edtPlanDate.setInputType(InputType.TYPE_NULL);
+        TextView txtChoosePlanDate = popupView.findViewById(R.id.txtChoosePlanDate);
+        txtChoosePlanDate.setInputType(InputType.TYPE_NULL);
             String pd = note.getPlanDate().getDate() + "/" + (note.getPlanDate().getMonth()+1) + "/"
                     + (note.getPlanDate().getYear() + 1900);
-            edtPlanDate.setText(pd);
-        edtPlanDate.setOnClickListener(new View.OnClickListener() {
+            txtChoosePlanDate.setText(pd);
+//            edtPlanDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                @Override
+//                public void onFocusChange(View view, boolean b) {
+//                    final Calendar cldr = Calendar.getInstance();
+//                    int day = cldr.get(Calendar.DAY_OF_MONTH);
+//                    int month = cldr.get(Calendar.MONTH);
+//                    int year = cldr.get(Calendar.YEAR);
+//                    DatePickerDialog picker =  new DatePickerDialog(getActivity(),
+//                            new DatePickerDialog.OnDateSetListener() {
+//                                @Override
+//                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+//                                    edtPlanDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+//                                }
+//                            }, year, month, day);
+//                    picker.show();
+//                }
+//            });
+
+        txtChoosePlanDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Calendar cldr = Calendar.getInstance();
@@ -182,7 +200,7 @@ public class NoteFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                edtPlanDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                txtChoosePlanDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
                             }
                         }, year, month, day);
                 picker.show();
@@ -206,7 +224,7 @@ public class NoteFragment extends Fragment {
                     Date createDate = new Date();
                     Date planDate = null;
                     try {
-                        planDate = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
+                        planDate = new SimpleDateFormat("dd/MM/yyyy").parse(txtChoosePlanDate.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -235,7 +253,7 @@ public class NoteFragment extends Fragment {
                     Date createDate = new Date();
                     Date planDate = null;
                     try {
-                        planDate = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
+                        planDate = new SimpleDateFormat("dd/MM/yyyy").parse(txtChoosePlanDate.getText().toString());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
