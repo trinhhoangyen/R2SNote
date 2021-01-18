@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
             if(status[i].equals("Pending")){
                 dataEntries.add(new ValueDataEntry(status[i], soluong.get("Pending")));
             }
-            if(status[i].equals("Done")){
+            if(status[i].equals("Processing")){
                 dataEntries.add(new ValueDataEntry(status[i], soluong.get("Processing")));
             }
 
