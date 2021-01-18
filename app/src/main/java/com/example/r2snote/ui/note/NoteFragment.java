@@ -61,7 +61,6 @@ public class NoteFragment extends Fragment {
 
     private Button btnShowPopup;
 
-    String TAG = "Note";
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_note, container, false);
@@ -86,7 +85,6 @@ public class NoteFragment extends Fragment {
         listViewNote.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.e(TAG, noteListViewAdapter.getNote(i).getId());
                 showPopupMenu(view, noteListViewAdapter.getNote(i));
             }
             private void showPopupMenu(View view, Note note){
@@ -171,23 +169,6 @@ public class NoteFragment extends Fragment {
             String pd = note.getPlanDate().getDate() + "/" + (note.getPlanDate().getMonth()+1) + "/"
                     + (note.getPlanDate().getYear() + 1900);
             txtChoosePlanDate.setText(pd);
-//            edtPlanDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//                @Override
-//                public void onFocusChange(View view, boolean b) {
-//                    final Calendar cldr = Calendar.getInstance();
-//                    int day = cldr.get(Calendar.DAY_OF_MONTH);
-//                    int month = cldr.get(Calendar.MONTH);
-//                    int year = cldr.get(Calendar.YEAR);
-//                    DatePickerDialog picker =  new DatePickerDialog(getActivity(),
-//                            new DatePickerDialog.OnDateSetListener() {
-//                                @Override
-//                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//                                    edtPlanDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-//                                }
-//                            }, year, month, day);
-//                    picker.show();
-//                }
-//            });
 
         txtChoosePlanDate.setOnClickListener(new View.OnClickListener() {
             @Override
