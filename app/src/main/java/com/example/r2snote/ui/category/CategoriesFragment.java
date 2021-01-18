@@ -1,21 +1,15 @@
 package com.example.r2snote.ui.category;
 
-import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,29 +18,20 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.r2snote.DTO.Category;
-import com.example.r2snote.DTO.Note;
-import com.example.r2snote.DTO.Priority;
-import com.example.r2snote.DTO.Status;
-import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
 import com.example.r2snote.R;
-import com.example.r2snote.ui.Login;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 public class CategoriesFragment extends Fragment {
     private MainActivity mainActivity = (MainActivity) getActivity();
-    private User user;
 
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     ArrayList<Category> listCategory;
@@ -56,26 +41,23 @@ public class CategoriesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_categories, container, false);
+        View root = inflater.inflate(R.layout.fragment_list, container, false);
 
-        mainActivity = (MainActivity) getActivity();
-        user = mainActivity.getUser();
+        listViewCategory = (ListView) root.findViewById(R.id.listItem);
+        btnPopupCategory = (Button) root.findViewById(R.id.btnShowPopup);
+        getList();
 
-        listViewCategory = (ListView) root.findViewById(R.id.listViewCategory);
-        btnPopupCategory = (Button) root.findViewById(R.id.btnPopupCategory);
-        getListCategory();
-
-//        CheckCategory("", view);
         btnPopupCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupNote(view);
+                showPopup(view);
             }
         });
+
         return root;
     }
 
-    public void showPopupNote(View view){
+    public void showPopup(View view){
         View popupView = getLayoutInflater().inflate(R.layout.popup_add, null);
         PopupWindow popupWindow = new PopupWindow(popupView, 800, 300, true);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
@@ -88,24 +70,24 @@ public class CategoriesFragment extends Fragment {
                 public void onClick(View view) {
                     String name = edtNameAdd.getText().toString();
                     if (name != null) {
-                        CheckCategory(name, view);
+                        check(name, view);
                         popupWindow.dismiss();
                     }
                     else {
-                        Toast.makeText(mainActivity.getApplicationContext(), "Add was not successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Add was not successful", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
     }
 
-    public void getListCategory(){
-        listCategory  = new ArrayList<Category>();
+    public void getList(){
+        listCategory  = new ArrayList<>();
         database.child("categories").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Category category = ds.getValue(Category.class);
-                    listCategory.add(category);
+                    Category item = ds.getValue(Category.class);
+                    listCategory.add(item);
                 }
             if (listCategory.size() > 0){
                 categoryListViewAdapter = new CategoryListViewAdapter(listCategory);
@@ -115,47 +97,47 @@ public class CategoriesFragment extends Fragment {
 
         @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(mainActivity.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
 
             }
         });
     }
 
-    public void addCategory(String name){
+    public void add(String name){
         try {
             Date createDate = new Date();
-            Category category = new Category(name,createDate);
+            Category item = new Category(name,createDate);
                 UUID uuid = UUID.randomUUID();
-                database.child("categories").child(uuid.toString()).setValue(category);
+                database.child("categories").child(uuid.toString()).setValue(item);
                 listCategory.clear();
-                Toast.makeText(mainActivity.getApplicationContext(), "Add successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Add successfully", Toast.LENGTH_SHORT).show();
         }
         catch (Exception err){
-            Toast.makeText(mainActivity.getApplicationContext(), "Add was not successful: " +err.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Add was not successful: " +err.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void CheckCategory(String name, View v){
+    public void check(String name, View v){
         database.child("categories").addValueEventListener(new ValueEventListener() {
             Boolean result = new Boolean(true);
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Category category = ds.getValue(Category.class);
-                    if(category.getName().equals(name)) {
+                    Category item = ds.getValue(Category.class);
+                    if(item.getName().equals(name)) {
                         result = false;
                     }
                 }
                 if (result){
-                    addCategory(name);
+                    add(name);
                 }
                 else {
-                    Toast.makeText(mainActivity.getApplicationContext(), "Add was not successful!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Add was not successful!", Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(mainActivity.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -185,23 +167,19 @@ class CategoryListViewAdapter extends BaseAdapter {
         return 0;
     }
 
-    public Category getCate(int position) {
-        return listCate.get(position);
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LinearLayoutCompat viewCategory;
+        LinearLayoutCompat view;
         if (convertView == null) {
-            viewCategory = (LinearLayoutCompat) View.inflate(parent.getContext(), R.layout.activity_category_item, null);
-        } else viewCategory = (LinearLayoutCompat) convertView;
+            view = (LinearLayoutCompat) View.inflate(parent.getContext(), R.layout.activity_list_item, null);
+        } else view = (LinearLayoutCompat) convertView;
 
-        Category cate = (Category) getItem(position);
+        Category item = (Category) getItem(position);
 
-        ((TextView) viewCategory.findViewById(R.id.txtNameCate)).setText(("Name: " +  cate.getName()));
-        String cd = cate.getCreateDate().getDate() + "/" + (cate.getCreateDate().getMonth()+1) + "/"
-                + (cate.getCreateDate().getYear() + 1900);
-        ((TextView) viewCategory.findViewById(R.id.txtCreateDateCate)).setText(String.format("Create date: %s", cd));
-        return viewCategory;
+        ((TextView) view.findViewById(R.id.txtNameCate)).setText(("Name: " +  item.getName()));
+        String cd = item.getCreateDate().getDate() + "/" + (item.getCreateDate().getMonth()+1) + "/"
+                + (item.getCreateDate().getYear() + 1900);
+        ((TextView) view.findViewById(R.id.txtCreateDateCate)).setText(String.format("Create date: %s", cd));
+        return view;
     }
 }
