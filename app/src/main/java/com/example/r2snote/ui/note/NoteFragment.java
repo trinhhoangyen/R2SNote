@@ -72,8 +72,10 @@ public class NoteFragment extends Fragment {
         listViewNote = (ListView) root.findViewById(R.id.listViewNote);
 
         btnShowPopup = (Button) root.findViewById(R.id.btnShowPopup);
-        getListNote(user.getId());
+        getListNote();
         getListCategory();
+        getListStatus();
+        getListPriority();
 
         btnShowPopup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,9 +87,9 @@ public class NoteFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.e(TAG, noteListViewAdapter.getNote(i).getId());
-                showPopupMenu(view, i, noteListViewAdapter.getNote(i));
+                showPopupMenu(view, noteListViewAdapter.getNote(i));
             }
-            private void showPopupMenu(View view, int position, Note note){
+            private void showPopupMenu(View view, Note note){
                 PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
                 popupMenu.inflate(R.menu.popup_edit_delete);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -137,7 +139,7 @@ public class NoteFragment extends Fragment {
         spnCategory.setAdapter(adapterCategory);
         spnCategory.setSelection(positionSpnCategory);
 
-        // show spinner category
+        // show spinner status
         ArrayList<String> itemsStatus = new ArrayList<>();
         int positionSpnStatus = 0;
         for (Status s : listStatus){
@@ -150,7 +152,20 @@ public class NoteFragment extends Fragment {
         spnStatus.setAdapter(adapterStatus);
         spnStatus.setSelection(positionSpnStatus);
 
+        // show spinner priority
+        ArrayList<String> itemsPriority = new ArrayList<>();
+        int positionSpnPriority = 0;
+        for (Status s : listStatus){
+            itemsPriority.add(s.getName());
+            if (s.getName().equals(note.getPriority())){
+                positionSpnPriority = itemsPriority.size()-1;
+            }
+        }
+        ArrayAdapter<String> adapterPriority = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, itemsPriority);
+        spnPriority.setAdapter(adapterPriority);
+        spnPriority.setSelection(positionSpnPriority);
 
+        //show DatePicker planDate
         EditText edtPlanDate = popupView.findViewById(R.id.edtPlanDate);
         edtPlanDate.setInputType(InputType.TYPE_NULL);
             String pd = note.getPlanDate().getDate() + "/" + (note.getPlanDate().getMonth()+1) + "/"
@@ -174,6 +189,7 @@ public class NoteFragment extends Fragment {
             }
         });
 
+        //show Button
         TextView txtTypePopupNote = popupView.findViewById(R.id.txtTypePopupNote);
         Button btnActivity = popupView.findViewById(R.id.btnActivity);
 
@@ -188,6 +204,11 @@ public class NoteFragment extends Fragment {
             btnActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    String name = etdNewNoteName.getText().toString();
+                    String cate = spnCategory.getSelectedItem().toString();
+                    String status = spnStatus.getSelectedItem().toString();
+                    String priority = spnPriority.getSelectedItem().toString();
+                    Date createDate = new Date();
                     Date planDate = null;
                     try {
                         planDate = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
@@ -212,6 +233,11 @@ public class NoteFragment extends Fragment {
             btnActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    String name = etdNewNoteName.getText().toString();
+                    String cate = spnCategory.getSelectedItem().toString();
+                    String status = spnStatus.getSelectedItem().toString();
+                    String priority = spnPriority.getSelectedItem().toString();
+                    Date createDate = new Date();
                     Date planDate = null;
                     try {
                         planDate = new SimpleDateFormat("dd/MM/yyyy").parse(edtPlanDate.getText().toString());
@@ -269,7 +295,7 @@ public class NoteFragment extends Fragment {
         }
     }
 
-    public void getListNote(String userId){
+    public void getListNote(){
         listNote  = new ArrayList<>();
         database.child("notes").addValueEventListener(new ValueEventListener() {
             @Override
