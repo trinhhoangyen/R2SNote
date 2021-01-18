@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="110dp"
         android:text="Note Management System"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
