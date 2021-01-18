@@ -20,6 +20,18 @@
         android:text="TextView" />
 
     <TextView
+        android:id="@+id/txtPriorityNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/txtStatusNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
         android:id="@+id/txtPlanDateNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

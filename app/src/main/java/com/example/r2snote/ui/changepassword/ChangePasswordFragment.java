@@ -1,5 +1,6 @@
 package com.example.r2snote.ui.changepassword;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.example.r2snote.DTO.Note;
 import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
 import com.example.r2snote.R;
+import com.example.r2snote.ui.Login;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -56,24 +58,26 @@ public class ChangePasswordFragment extends Fragment{
                             Toast.makeText(mainActivity.getApplicationContext(), "New password doesn't match!", Toast.LENGTH_SHORT).show();
                         } else {
                             User temp = new User(user.getUsername(), np);
-                            changePassword(user.getId(), temp);
+                            changePassword(user.getId(), temp, v);
                         }
                     }
                 }
                 else {
                     Toast.makeText(mainActivity.getApplicationContext(),
                             "Password change was not successful!", Toast.LENGTH_SHORT).show();
-
                 }
             }
         });
         return root;
     }
 
-    public void changePassword(String id, User u){
+    public void changePassword(String id, User u, View v){
         try {
             database.child("users").child(id).setValue(u);
             Toast.makeText(mainActivity.getApplicationContext(), "Change password successfully", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(v.getContext(), Login.class);
+            intent.putExtra("Username", u.getUsername());
+            startActivity(intent);
         }
         catch (Exception err){
             Toast.makeText(mainActivity.getApplicationContext(), "Password change was not successful: " + err.toString(), Toast.LENGTH_SHORT).show();

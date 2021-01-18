@@ -75,7 +75,6 @@ public class Register extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), Login.class);
                 intent.putExtra("Username", u.getUsername());
                 intent.putExtra("Password", u.getPassword());
-                intent.putExtra("Id", u.getId());
                 startActivity(intent);
         }
         catch (Exception err){

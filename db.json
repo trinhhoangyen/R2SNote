@@ -12,7 +12,10 @@
   "notes" : {
     "001" : {
       "userId": "001",
+      "name" : "Go to the spa",
       "category" : "Relax",
+      "priority":"High",
+      "status": "Done",
       "createDate" : {
         "date" : 16,
         "day" : 6,
@@ -24,7 +27,6 @@
         "timezoneOffset" : -420,
         "year" : 121
       },
-      "name" : "Football",
       "planDate" : {
         "date" : 1,
         "day" : 5,
@@ -39,6 +41,9 @@
     },
     "003" : {
       "userId": "001",
+      "name" : "Do my homework",
+      "priority":"Slow",
+      "status": "Pending",
       "category" : "Study",
       "createDate" : {
         "date" : 16,
@@ -51,7 +56,6 @@
         "timezoneOffset" : -420,
         "year" : 121
       },
-      "name" : "Do my homework",
       "planDate" : {
         "date" : 1,
         "day" : 5,
@@ -65,7 +69,9 @@
       }
     },
     "002" : {
-      "userId": "002",
+      "userId": "001",
+      "priority":"Medium",
+      "status": "Processing",
       "category" : "Relax",
       "createDate" : {
         "date" : 16,
@@ -79,6 +85,93 @@
         "year" : 121
       },
       "name" : "Play",
+      "planDate" : {
+        "date" : 1,
+        "day" : 5,
+        "hours" : 0,
+        "minutes" : 0,
+        "month" : 0,
+        "seconds" : 0,
+        "time" : 1609434000000,
+        "timezoneOffset" : -420,
+        "year" : 121
+      }
+    },
+    "004" : {
+      "userId": "001",
+      "priority":"Slow",
+      "status": "Processing",
+      "category" : "Study",
+      "createDate" : {
+        "date" : 16,
+        "day" : 6,
+        "hours" : 17,
+        "minutes" : 39,
+        "month" : 0,
+        "seconds" : 26,
+        "time" : 1610793566589,
+        "timezoneOffset" : -420,
+        "year" : 121
+      },
+      "name" : "Do my app android",
+      "planDate" : {
+        "date" : 1,
+        "day" : 5,
+        "hours" : 0,
+        "minutes" : 0,
+        "month" : 0,
+        "seconds" : 0,
+        "time" : 1609434000000,
+        "timezoneOffset" : -420,
+        "year" : 121
+      }
+    },
+    "005" : {
+      "userId": "001",
+      "status": "Processing",
+      "priority":"Slow",
+      "category" : "Study",
+      "createDate" : {
+        "date" : 16,
+        "day" : 6,
+        "hours" : 17,
+        "minutes" : 39,
+        "month" : 0,
+        "seconds" : 26,
+        "time" : 1610793566589,
+        "timezoneOffset" : -420,
+        "year" : 121
+      },
+      "name" : "Learn my course",
+      "planDate" : {
+        "date" : 1,
+        "day" : 5,
+        "hours" : 0,
+        "minutes" : 0,
+        "month" : 0,
+        "seconds" : 0,
+        "time" : 1609434000000,
+        "timezoneOffset" : -420,
+        "year" : 121
+      }
+    },
+    "006" : {
+      "userId": "001",
+      "priority":"Medium",
+      "status": "Done",
+      "category" : "Relax",
+      "createDate" : {
+        "date" : 16,
+        "day" : 6,
+        "hours" : 17,
+        "minutes" : 39,
+        "month" : 0,
+        "seconds" : 26,
+        "time" : 1610793566589,
+        "timezoneOffset" : -420,
+        "year" : 121
+      },
+      "name" : "Play game",
       "planDate" : {
         "date" : 1,
         "day" : 5,
