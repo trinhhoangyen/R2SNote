@@ -12,16 +12,16 @@
         android:theme="@style/Theme.R2SNote">
         <activity android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.R2SNote.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter></activity>
+            android:theme="@style/Theme.R2SNote.NoActionBar"></activity>
         <activity android:name=".ui.Register"
             tools:ignore="DuplicateActivity" />
         <activity
             android:name=".ui.Login">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

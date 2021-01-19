@@ -7,20 +7,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
-import com.example.r2snote.DTO.Category;
+import com.example.r2snote.DTO.ListViewAdapter;
+import com.example.r2snote.DTO.Modal;
 import com.example.r2snote.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,30 +32,24 @@ import java.util.UUID;
 
 public class CategoriesFragment extends Fragment {
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    ArrayList<Category> list = new ArrayList<>();
-    CategoryListViewAdapter listViewAdapter;
+    ArrayList<Modal> list = new ArrayList<>();
+    ListViewAdapter listViewAdapter;
     ListView listView;
-    private Button btnShowPopup;
+    Button btnShowPopup;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
 
-        listView = (ListView) root.findViewById(R.id.listItem);
-        btnShowPopup = (Button) root.findViewById(R.id.btnShowPopup);
+        listView = root.findViewById(R.id.listItem);
+        btnShowPopup = root.findViewById(R.id.btnShowPopup);
 
-//        getList();
-
-        Category c1 = new Category("abc", new Date()),
-                c2 = new Category("abc", new Date()),
-                c3 = new Category("abc", new Date()); c1.setId("1"); c2.setId("2"); c3.setId("3");
-        list.add(c1); list.add(c2); list.add(c3); listViewAdapter = new CategoryListViewAdapter(list);
-        listView.setAdapter(listViewAdapter);
+        getList();
 
         btnShowPopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopup(view, new Category(), 0);
+                showPopup(view, new Modal(), 0);
             }
         });
 
@@ -71,7 +63,7 @@ public class CategoriesFragment extends Fragment {
         return root;
     }
 
-    private void showPopupMenu(View view, Category category){
+    private void showPopupMenu(View view, Modal category){
         PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
         popupMenu.inflate(R.menu.popup_edit_delete);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -92,7 +84,7 @@ public class CategoriesFragment extends Fragment {
         popupMenu.show();
     }
 
-    public void showPopup(View view, Category category, int type){
+    public void showPopup(View view, Modal category, int type){
         View popupView = getLayoutInflater().inflate(R.layout.popup_add, null);
         PopupWindow popupWindow = new PopupWindow(popupView, 800, 300, true);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
@@ -108,7 +100,7 @@ public class CategoriesFragment extends Fragment {
                 public void onClick(View view) {
                     String name = edtNameAdd.getText().toString();
                     if (name != null) {
-                        Category temp = new Category(category.getName(), category.getCreateDate());
+                        Modal temp = new Modal(name, category.getCreateDate());
                         checkUpdate(category.getId(), temp, view);
                         popupWindow.dismiss();
                     }
@@ -141,12 +133,12 @@ public class CategoriesFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Category item = ds.getValue(Category.class);
+                    Modal item = ds.getValue(Modal.class);
                     item.setId(ds.getKey());
                     list.add(item);
                 }
                 if (list.size() > 0){
-                    listViewAdapter = new CategoryListViewAdapter(list);
+                    listViewAdapter = new ListViewAdapter(list);
                     listView.setAdapter(listViewAdapter);
                 }
             }
@@ -165,14 +157,14 @@ public class CategoriesFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Category item = ds.getValue(Category.class);
+                    Modal item = ds.getValue(Modal.class);
                     if(item.getName().equals(name)) {
                         result = false;
                     }
                 }
                 if (result){ try {
                     Date createDate = new Date();
-                    Category item = new Category(name,createDate);
+                    Modal item = new Modal(name,createDate);
                     UUID uuid = UUID.randomUUID();
                     database.child("categories").child(uuid.toString()).setValue(item);
                     list.clear();
@@ -193,20 +185,20 @@ public class CategoriesFragment extends Fragment {
         });
     }
 
-    public void checkUpdate(String id, Category category, View v){
+    public void checkUpdate(String id, Modal modal, View v){
         database.child("categories").addValueEventListener(new ValueEventListener() {
             Boolean result = new Boolean(true);
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Category item = ds.getValue(Category.class);
-                    if(item.getName().equals(category.getName())) {
+                    Modal item = ds.getValue(Modal.class);
+                    if(item.getName().equals(modal.getName())) {
                         result = false;
                     }
                 }
                 if (result){
                     try {
-                        database.child("categories").child(id).setValue(category);
+                        database.child("categories").child(id).setValue(modal);
                         list.clear();
                         Toast.makeText(getActivity(), "Edit successfully", Toast.LENGTH_SHORT).show();
                     }
@@ -236,44 +228,4 @@ public class CategoriesFragment extends Fragment {
         }
     }
 
-}
-
-class CategoryListViewAdapter extends BaseAdapter {
-
-    final ArrayList<Category> listCate;
-
-    CategoryListViewAdapter(ArrayList<Category> listCate) {
-        this.listCate = listCate;
-    }
-
-    @Override
-    public int getCount() {
-        return listCate.size();
-    }
-
-    @Override
-    public Category getItem(int position) {
-        return listCate.get(position);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LinearLayoutCompat view;
-        if (convertView == null) {
-            view = (LinearLayoutCompat) View.inflate(parent.getContext(), R.layout.activity_list_item, null);
-        } else view = (LinearLayoutCompat) convertView;
-
-        Category item = (Category) getItem(position);
-
-        ((TextView) view.findViewById(R.id.txtNameCate)).setText(("Name: " +  item.getName()));
-        String cd = item.getCreateDate().getDate() + "/" + (item.getCreateDate().getMonth()+1) + "/"
-                + (item.getCreateDate().getYear() + 1900);
-        ((TextView) view.findViewById(R.id.txtCreateDateCate)).setText(String.format("Create date: %s", cd));
-        return view;
-    }
 }

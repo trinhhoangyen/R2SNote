@@ -25,10 +25,8 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
-import com.example.r2snote.DTO.Category;
+import com.example.r2snote.DTO.Modal;
 import com.example.r2snote.DTO.Note;
-import com.example.r2snote.DTO.Priority;
-import com.example.r2snote.DTO.Status;
 import com.example.r2snote.DTO.User;
 import com.example.r2snote.MainActivity;
 import com.example.r2snote.R;
@@ -51,9 +49,9 @@ public class NoteFragment extends Fragment {
 
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     ArrayList<Note> listNote;
-    ArrayList<Category> listCategory;
-    ArrayList<Status> listStatus;
-    ArrayList<Priority> listPriority;
+    ArrayList<Modal> listCategory= new ArrayList<>();
+    ArrayList<Modal> listStatus= new ArrayList<>();
+    ArrayList<Modal> listPriority= new ArrayList<>();
 
     NoteListViewAdapter noteListViewAdapter;
     ListView listViewNote;
@@ -71,9 +69,9 @@ public class NoteFragment extends Fragment {
 
         btnShowPopup = (Button) root.findViewById(R.id.btnShowPopup);
         getListNote();
-        getListCategory();
-        getListStatus();
-        getListPriority();
+        getList("categories", listCategory);
+        getList("status", listStatus);
+        getList("priority", listPriority);
 
         btnShowPopup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +125,7 @@ public class NoteFragment extends Fragment {
         // show spinner category
         ArrayList<String> itemsCate = new ArrayList<>();
         int positionSpnCategory = 0;
-        for (Category c : listCategory){
+        for (Modal c : listCategory){
             itemsCate.add(c.getName());
             if (c.getName().equals(note.getCategory())){
                 positionSpnCategory = itemsCate.size()-1;
@@ -140,7 +138,7 @@ public class NoteFragment extends Fragment {
         // show spinner status
         ArrayList<String> itemsStatus = new ArrayList<>();
         int positionSpnStatus = 0;
-        for (Status s : listStatus){
+        for (Modal s : listStatus){
             itemsStatus.add(s.getName());
             if (s.getName().equals(note.getStatus())){
                 positionSpnStatus = itemsStatus.size()-1;
@@ -153,7 +151,7 @@ public class NoteFragment extends Fragment {
         // show spinner priority
         ArrayList<String> itemsPriority = new ArrayList<>();
         int positionSpnPriority = 0;
-        for (Priority s : listPriority){
+        for (Modal s : listPriority){
             itemsPriority.add(s.getName());
             if (s.getName().equals(note.getPriority())){
                 positionSpnPriority = itemsPriority.size()-1;
@@ -318,14 +316,13 @@ public class NoteFragment extends Fragment {
         });
     }
 
-    public void getListCategory(){
-        listCategory  = new ArrayList<Category>();
-        database.child("categories").addValueEventListener(new ValueEventListener() {
+    public void getList(String name, ArrayList<Modal> list){
+        database.child(name).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Category category = ds.getValue(Category.class);
-                            listCategory.add(category);
+                    Modal category = ds.getValue(Modal.class);
+                    list.add(category);
                     }
                 }
 
@@ -337,43 +334,6 @@ public class NoteFragment extends Fragment {
         });
     }
 
-    public void getListStatus(){
-        listStatus  = new ArrayList<Status>();
-        database.child("status").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Status category = ds.getValue(Status.class);
-                    listStatus.add(category);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(mainActivity.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
-
-    public void getListPriority(){
-        listPriority  = new ArrayList<Priority>();
-        database.child("priority").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Priority category = ds.getValue(Priority.class);
-                    listPriority.add(category);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(mainActivity.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
 }
 
 class NoteListViewAdapter extends BaseAdapter {

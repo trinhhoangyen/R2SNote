@@ -1,5 +1,6 @@
 package com.example.r2snote.DTO;
 
+import com.example.r2snote.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -30,6 +31,5 @@ public class Modal {
     public String getId() {
         return id;
     }
-
-
 }
+
