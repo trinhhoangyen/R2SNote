@@ -42,16 +42,6 @@ public class Login extends AppCompatActivity {
             String user = "";
             user = intent.getStringExtra("Username");
             edtUsername.setText(user);
-            if (getIntent().hasExtra("Password")) {
-                String pass = "";
-                pass = intent.getStringExtra("Password");
-                edtPassword.setText(pass);
-            }
-        }
-        else {
-            edtUsername.setText("admin");
-            edtPassword.setText("1");
-
         }
 
         btnLogin.setOnClickListener(new View.OnClickListener() {

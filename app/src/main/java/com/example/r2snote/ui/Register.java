@@ -30,7 +30,7 @@ public class Register extends AppCompatActivity {
     private TextView txtLogin;
     private Button btnRegister;
     private EditText edtNewUsername, edtNewPassword, edtConfirmPassword;
-
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +44,7 @@ public class Register extends AppCompatActivity {
         txtLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), Login.class);
+                intent = new Intent(v.getContext(), Login.class);
                 startActivity(intent);
             }
         });
@@ -66,21 +66,6 @@ public class Register extends AppCompatActivity {
 
     }
 
-    public void Register(String user, String pass, View v){
-        try {
-            User u = new User(user, pass);
-                UUID uuid = UUID.randomUUID();
-                database.child("users").child(uuid.toString()).setValue(u);
-                Toast.makeText(getApplication(), "Register successfully", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(v.getContext(), Login.class);
-                intent.putExtra("Username", u.getUsername());
-                intent.putExtra("Password", u.getPassword());
-                startActivity(intent);
-        }
-        catch (Exception err){
-            Toast.makeText(getApplication(), "Register was not successful: " + err.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
     public void CheckUser(String user, String pass, View v){
         database.child("users").addValueEventListener(new ValueEventListener() {
             Boolean result = new Boolean(true);
@@ -93,7 +78,18 @@ public class Register extends AppCompatActivity {
                     }
                 }
                 if (result){
-                    Register(user, pass, v);
+                    try {
+                        User u = new User(user, pass);
+                        UUID uuid = UUID.randomUUID();
+                        database.child("users").child(uuid.toString()).setValue(u);
+                        Toast.makeText(getApplication(), "Register successfully", Toast.LENGTH_SHORT).show();
+                        intent = new Intent(v.getContext(), Login.class);
+                        intent.putExtra("Username", u.getUsername());
+                        startActivity(intent);
+                    }
+                    catch (Exception err){
+                        Toast.makeText(getApplication(), "Register was not successful: " + err.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Register was not successful!", Toast.LENGTH_SHORT).show();
@@ -106,7 +102,4 @@ public class Register extends AppCompatActivity {
         });
     }
 
-    public void sendDataToFragment(String username, String pass){
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-    }
 }

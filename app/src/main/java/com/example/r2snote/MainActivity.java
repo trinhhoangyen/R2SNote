@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.action_logout:
                         Intent intentLogin = new Intent(getApplication(), Login.class);
+                        user = new User();
                         startActivity(intentLogin);
                         return true;
                     default:
