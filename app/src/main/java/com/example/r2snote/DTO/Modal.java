@@ -1,20 +1,22 @@
 package com.example.r2snote.DTO;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Date;
 
-public class Category {
+public class Modal {
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     private String name;
     private String id;
     private Date createDate;
-    public Category() {
-
+    public Modal() {
     }
 
-    public Category(String name, Date createDate) {
+    public Modal(String name, Date createDate) {
         this.name = name;
         this.createDate = createDate;
     }
-
 
     public void setId(String id) {
         this.id = id;
@@ -22,13 +24,12 @@ public class Category {
     public Date getCreateDate() {
         return createDate;
     }
-
     public String getName() {
         return name;
     }
-
     public String getId() {
         return id;
     }
+
 
 }

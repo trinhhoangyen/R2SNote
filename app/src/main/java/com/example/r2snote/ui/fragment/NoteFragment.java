@@ -86,29 +86,30 @@ public class NoteFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 showPopupMenu(view, noteListViewAdapter.getNote(i));
             }
-            private void showPopupMenu(View view, Note note){
-                PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
-                popupMenu.inflate(R.menu.popup_edit_delete);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()){
-                            case R.id.action_popup_edit:
-                                showPopupNote(view, note,1);
-                                return true;
-                            case R.id.action_popup_delete:
-                                deleteNote(note.getId());
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-                popupMenu.show();
-            }
         });
 
         return root;
+    }
+
+    private void showPopupMenu(View view, Note note){
+        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+        popupMenu.inflate(R.menu.popup_edit_delete);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_popup_edit:
+                        showPopupNote(view, note,1);
+                        return true;
+                    case R.id.action_popup_delete:
+                        deleteNote(note.getId());
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popupMenu.show();
     }
 
     public void showPopupNote(View view, Note note, int type){
@@ -399,7 +400,6 @@ class NoteListViewAdapter extends BaseAdapter {
     }
 
     public Note getNote(int position) {
-//        Note note = new Note()
         return listNote.get(position);
     }
 
