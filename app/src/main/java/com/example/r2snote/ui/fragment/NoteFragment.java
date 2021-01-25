@@ -65,13 +65,14 @@ public class NoteFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         user = mainActivity.getUser();
 
+        getList("categories", listCategory);
+        getList("status", listStatus);
+        getList("priority", listPriority);
+
         listViewNote = (ListView) root.findViewById(R.id.listViewNote);
 
         btnShowPopup = (Button) root.findViewById(R.id.btnShowPopup);
         getListNote();
-        getList("categories", listCategory);
-        getList("status", listStatus);
-        getList("priority", listPriority);
 
         btnShowPopup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,44 +123,10 @@ public class NoteFragment extends Fragment {
         Spinner spnStatus = popupView.findViewById(R.id.spnStatus);
         Spinner spnPriority = popupView.findViewById(R.id.spnPriority);
 
-        // show spinner category
-        ArrayList<String> itemsCate = new ArrayList<>();
-        int positionSpnCategory = 0;
-        for (Modal c : listCategory){
-            itemsCate.add(c.getName());
-            if (c.getName().equals(note.getCategory())){
-                positionSpnCategory = itemsCate.size()-1;
-            }
-        }
-        ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, itemsCate);
-        spnCategory.setAdapter(adapterCategory);
-        spnCategory.setSelection(positionSpnCategory);
+        showSpinner(note, spnCategory, listCategory);
+        showSpinner(note, spnPriority, listPriority);
+        showSpinner(note, spnStatus, listStatus);
 
-        // show spinner status
-        ArrayList<String> itemsStatus = new ArrayList<>();
-        int positionSpnStatus = 0;
-        for (Modal s : listStatus){
-            itemsStatus.add(s.getName());
-            if (s.getName().equals(note.getStatus())){
-                positionSpnStatus = itemsStatus.size()-1;
-            }
-        }
-        ArrayAdapter<String> adapterStatus = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, itemsStatus);
-        spnStatus.setAdapter(adapterStatus);
-        spnStatus.setSelection(positionSpnStatus);
-
-        // show spinner priority
-        ArrayList<String> itemsPriority = new ArrayList<>();
-        int positionSpnPriority = 0;
-        for (Modal s : listPriority){
-            itemsPriority.add(s.getName());
-            if (s.getName().equals(note.getPriority())){
-                positionSpnPriority = itemsPriority.size()-1;
-            }
-        }
-        ArrayAdapter<String> adapterPriority = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, itemsPriority);
-        spnPriority.setAdapter(adapterPriority);
-        spnPriority.setSelection(positionSpnPriority);
 
         //show DatePicker planDate
         TextView txtChoosePlanDate = popupView.findViewById(R.id.txtChoosePlanDate);
@@ -197,10 +164,9 @@ public class NoteFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     String name = etdNewNoteName.getText().toString();
-                    String cate = spnCategory.getSelectedItem().toString();
-                    String status = spnStatus.getSelectedItem().toString();
-                    String priority = spnPriority.getSelectedItem().toString();
-                    Date createDate = new Date();
+                    String cateId = getIdModal(spnCategory.getSelectedItem().toString(), listCategory);
+                    String statusId = getIdModal(spnStatus.getSelectedItem().toString(), listStatus);
+                    String priorityId = getIdModal(spnPriority.getSelectedItem().toString(), listPriority);
                     Date planDate = null;
                     try {
                         planDate = new SimpleDateFormat("dd/MM/yyyy").parse(txtChoosePlanDate.getText().toString());
@@ -208,8 +174,8 @@ public class NoteFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    if (cate != null && name != null && planDate != null) {
-                        Note temp = new Note(note.getUserId(), name, cate,status, priority, planDate, createDate);
+                    if (!cateId.equals("") && name != null && planDate != null) {
+                        Note temp = new Note(note.getUserId(), name, cateId,statusId, priorityId, planDate, note.getCreateDate());
                         temp.setId(note.getId());
                         updateNote(temp);
                         Toast.makeText(mainActivity.getApplicationContext(), "Edit successfully", Toast.LENGTH_SHORT).show();
@@ -226,9 +192,9 @@ public class NoteFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     String name = etdNewNoteName.getText().toString();
-                    String cate = spnCategory.getSelectedItem().toString();
-                    String status = spnStatus.getSelectedItem().toString();
-                    String priority = spnPriority.getSelectedItem().toString();
+                    String cateId = getIdModal(spnCategory.getSelectedItem().toString(), listCategory);
+                    String statusId = getIdModal(spnStatus.getSelectedItem().toString(), listStatus);
+                    String priorityId = getIdModal(spnPriority.getSelectedItem().toString(), listPriority);
                     Date createDate = new Date();
                     Date planDate = null;
                     try {
@@ -236,9 +202,8 @@ public class NoteFragment extends Fragment {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
-                    if (cate != null && name != null && planDate != null) {
-                        addNote(name, cate, status, priority, planDate, createDate );
+                    if (!cateId.equals("") && name != null && planDate != null) {
+                        addNote(name, cateId, statusId, priorityId, planDate, createDate );
                         Toast.makeText(mainActivity.getApplicationContext(), "Add successfully", Toast.LENGTH_SHORT).show();
                         popupWindow.dismiss();
                     }
@@ -248,6 +213,28 @@ public class NoteFragment extends Fragment {
                 }
             });
         }
+    }
+
+    public String getIdModal(String name, ArrayList<Modal> list){
+        for (Modal m : list){
+            if (m.getName().equals(name))
+                return m.getId();
+        }
+        return "";
+    }
+
+    public void showSpinner(Note note,Spinner spn, ArrayList<Modal> list){
+        ArrayList<String> itemsPriority = new ArrayList<>();
+        int positionSpnPriority = 0;
+        for (Modal s : list){
+            itemsPriority.add(s.getName());
+            if (s.getName().equals(note.getPriority())){
+                positionSpnPriority = itemsPriority.size()-1;
+            }
+        }
+        ArrayAdapter<String> adapterPriority = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, itemsPriority);
+        spn.setAdapter(adapterPriority);
+        spn.setSelection(positionSpnPriority);
     }
 
     public void addNote(String name, String cate,String status,String priority, Date planDate, Date createDate){
@@ -303,7 +290,7 @@ public class NoteFragment extends Fragment {
                 }
 
                 if (listNote.size() > 0){
-                    noteListViewAdapter = new NoteListViewAdapter(listNote);
+                    noteListViewAdapter = new NoteListViewAdapter(listNote, listCategory, listStatus, listPriority);
                     listViewNote.setAdapter(noteListViewAdapter);
                 }
             }
@@ -321,8 +308,9 @@ public class NoteFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Modal category = ds.getValue(Modal.class);
-                    list.add(category);
+                    Modal modal = ds.getValue(Modal.class);
+                    modal.setId(ds.getKey());
+                    list.add(modal);
                     }
                 }
 
@@ -333,15 +321,20 @@ public class NoteFragment extends Fragment {
             }
         });
     }
-
 }
 
 class NoteListViewAdapter extends BaseAdapter {
 
     final ArrayList<Note> listNote;
+    final ArrayList<Modal> listC;
+    final ArrayList<Modal> listS;
+    final ArrayList<Modal> listP;
 
-    NoteListViewAdapter(ArrayList<Note> listNote) {
+    NoteListViewAdapter(ArrayList<Note> listNote, ArrayList<Modal> listC, ArrayList<Modal> listS, ArrayList<Modal> listP) {
         this.listNote = listNote;
+        this.listC = listC;
+        this.listS = listS;
+        this.listP = listP;
     }
 
     @Override
@@ -350,8 +343,15 @@ class NoteListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return listNote.get(position);
+    public Note getItem(int position) {
+        Note temp = (Note) listNote.get(position);
+        String cate ="", status = "", pri = "";
+            cate = getNameModal(temp.getCategory(), listC);
+            status = getNameModal(temp.getStatus(), listS);
+            pri = getNameModal(temp.getPriority(), listP);
+        Note result = new Note(temp.getUserId(), temp.getName(), cate, status, pri,
+                temp.getPlanDate(), temp.getCreateDate());
+        return result;
     }
 
     @Override
@@ -363,6 +363,14 @@ class NoteListViewAdapter extends BaseAdapter {
         return listNote.get(position);
     }
 
+
+    public String getNameModal(String id, ArrayList<Modal> list){
+        for (Modal m : list){
+            if (m.getId().equals(id))
+                return m.getName();
+        }
+        return "";
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LinearLayoutCompat viewNote;
