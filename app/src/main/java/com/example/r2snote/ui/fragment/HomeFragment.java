@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        anyChartView = (AnyChartView) root.findViewById(R.id.any_chart_view);
+        anyChartView = root.findViewById(R.id.any_chart_view);
         mainActivity = (MainActivity) getActivity();
         user = mainActivity.getUser();
         getListNote();
@@ -92,13 +92,13 @@ public class HomeFragment extends Fragment {
                 }
                 HashMap<String, Integer> soluong = new HashMap<String, Integer>();
                 for(Note n : listNote){
-                    if(n.getStatus().equals("Done")) {
+                    if(n.getStatus().equals("1")) {
                         done++;
                     }
-                    if(n.getStatus().equals("Pending")) {
+                    if(n.getStatus().equals("3")) {
                         pending++;
                     }
-                    if(n.getStatus().equals("Processing")) {
+                    if(n.getStatus().equals("2")) {
                         processing++;
                     }
                 }
